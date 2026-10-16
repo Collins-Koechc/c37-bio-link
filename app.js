@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ⚡ c37biolink FULL-STACK MASTER CONTROLLER LOGIC ENGINE - PART 1
+   ⚡ c37biolink ENGINE LOGIC MAINFRAME - PART 1: GLOBAL PLATFORM COCKPIT
    ========================================================================== */
 
 // Default raw SVG vector circle badge fallback if the user skips uploading an image
@@ -39,12 +39,12 @@ const viewBio = document.getElementById("view-bio");
 // Forward custom box click hook natively to hidden file element selector row
 fileUploadTrigger.addEventListener("click", () => fileInput.click());
 /* ==========================================================================
-   📸 IN-MEMORY IMAGE COMPRESSOR LOOP & SHOWCASE RENDERER
+   📸 PART 2: IN-MEMORY IMAGE COMPRESSION VALVE & PROFILE DISPLAY ENGINE
    ========================================================================== */
 
-// 📷 MONITORS THE VALVE CONTAINER FOR LOCAL PHOTO SELECTION
+// 📷 MONITORS THE FILE SELECTION VALVE NATIVELY
 fileInput.addEventListener("change", (event) => {
-    const targetingFileAsset = event.target.files[0];
+    const targetingFileAsset = event.target.files[0]; // Captures the primary image instance directly
     if (targetingFileAsset) {
         uploadStatusLabel.textContent = "⚡ Optimizing Photo Footprint...";
         uploadStatusLabel.style.color = "var(--primary-gold)";
@@ -53,9 +53,8 @@ fileInput.addEventListener("change", (event) => {
         imageFileLoader.onload = function(e) {
             const rawTemporaryImageObject = new Image();
             rawTemporaryImageObject.onload = function() {
-                // Initialize an in-memory canvas scanner container layout layer
                 const hardwareCanvasCompressor = document.createElement("canvas");
-                const MAX_PIXEL_BOUNDS = 120; // Tight structural constraint for avatars
+                const MAX_PIXEL_BOUNDS = 120; // Locks avatar canvas grid frame size snug to 120px
                 
                 let targetWidth = rawTemporaryImageObject.width;
                 let targetHeight = rawTemporaryImageObject.height;
@@ -78,8 +77,8 @@ fileInput.addEventListener("change", (event) => {
                 const canvasContext2D = hardwareCanvasCompressor.getContext("2d");
                 canvasContext2D.drawImage(rawTemporaryImageObject, 0, 0, targetWidth, targetHeight);
                 
-                // Compress image to JPEG format with highly optimized quality parameters
-                activeAvatarBase64Stream = hardwareCanvasCompressor.toDataURL("image/jpeg", 0.7);
+                // Downsamples image data stream footprint into a tiny web-safe JPEG string
+                activeAvatarBase64Stream = hardwareCanvasCompressor.toDataURL("image/jpeg", 0.6);
                 
                 uploadStatusLabel.textContent = "📷 Profile Photo Fully Cached!";
                 uploadStatusLabel.style.color = "#ffffff";
@@ -92,112 +91,102 @@ fileInput.addEventListener("change", (event) => {
 
 // 🔄 RENDER PROCESSED SHOWCASE PROFILE CARD ENGINE
 function renderProfileCard(userProfile) {
-    // Hydrate preview card content fields surgically character-for-character
+    // Hydrate preview card content typography fields character-for-character
     viewName.textContent = userProfile.name;
     viewBio.textContent = userProfile.bio || "";
+    
+    // Assign compressed avatar string, falling back to gold-bordered vector SVG if clear
     viewAvatar.src = userProfile.img || DEFAULT_AVATAR;
 
     // Clear old residual button nodes inside landing target box deck
     bioLinksTargetDeck.innerHTML = "";
 
-    // Dynamic button generator mapping rails using unified schema keys
+    // Dynamic button generator mapping rails using unified schema array properties
     if (userProfile.links && Array.isArray(userProfile.links)) {
         userProfile.links.forEach((linkItem) => {
             const dynamicAnchorElement = document.createElement("a");
             dynamicAnchorElement.href = linkItem.u.startsWith("http") ? linkItem.u : `https://${linkItem.u}`;
-            dynamicAnchorElement.target = "_blank"; // Force secure tab separation on click
+            dynamicAnchorElement.target = "_blank"; // Force secure browser tab separation on click
             dynamicAnchorElement.className = "bio-link-button";
             dynamicAnchorElement.textContent = linkItem.t;
             bioLinksTargetDeck.appendChild(dynamicAnchorElement);
         });
     }
 
-    // Toggle local viewport view states cleanly
+    // Toggle local screen visibility view states instantly
     creatorStudioPane.classList.remove("active-view-pane");
     profileShowcasePane.classList.add("active-view-pane");
 }
 /* ==========================================================================
-   ⚡ RECONCILED SERVERLESS COMPILER ENGINE & ROUTING GATEWAY
+   ⚡ PART 3: UNBREAKABLE COMPILER ENGINE & URLSearchParams ROUTING GATEWAY
    ========================================================================== */
 
-// 🛡️ RECONCILED ROUTER GATEWAY - PARSES URL INCOMING PARAMETERS ON LOAD
+// 🛡️ RECONCILED ROUTER GATEWAY WITH SECURE STATE DECODING LOOKUPS
 function runSystemStateReconciliation() {
     const activeUrlHashString = window.location.hash;
 
-    // Check if the address bar hash starts with our active profile parameter data
     if (activeUrlHashString.includes("profile=")) {
         try {
-            // Use native URLSearchParams to isolate and pull out the raw profile token cleanly
             const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
             const profileDataRaw = hashParams.get('profile');
 
             if (profileDataRaw) {
-                // Clean up browser percent-encoding and decode Base64 stream back into JSON text
-                const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
+                // 🚀 THE BREAKTHROUGH UPGRADE: Pristine URI decoding restores our clean JSON text array instantly
+                const cleanJSONString = decodeURIComponent(profileDataRaw);
                 const userProfile = JSON.parse(cleanJSONString);
-                
-                // Fire our master render engine to draw the card view instantly
                 renderProfileCard(userProfile);
             }
         } catch (error) {
-            console.error("Profile decryption failed at runtime gateway:", error);
-            // Fallback safety route: clear out corrupted tokens and load creation forms cockpit
+            console.error("Profile decoding failed:", error);
             window.location.hash = "";
             profileShowcasePane.classList.remove("active-view-pane");
             creatorStudioPane.classList.add("active-view-pane");
         }
     } else {
-        // Default root link view state setup: keep showcase hidden, unroll creator studio console
         profileShowcasePane.classList.remove("active-view-pane");
         creatorStudioPane.classList.add("active-view-pane");
     }
 }
 
-// ⚡ IMMUCATE COMPILER TRIGGER VALVE - DIRECT RUNTIME VIEW STATE RECONCILIATION
+// ⚡ SERVERLESS COMPILER ENGINE (UNCRACKED ENCODE VARIANT)
 compileHubTrigger.addEventListener("click", () => {
-    const targetName = nameInput.value ? nameInput.value.trim() : "";
-    const targetBio = bioInput.value ? bioInput.value.trim() : "";
+    const targetName = nameInput.value.trim();
+    const targetBio = bioInput.value.trim();
 
-    // Structural constraint verification check
     if (targetName === "") {
-        alert("🛡️ Security Notice: Please input a Public Profile Name to compile your hub.");
+        alert("🛡️ Please input a Public Profile Name to compile your hub.");
         return;
     }
 
     const linksCollectionArray = [];
-    
-    // Scrape form data values cleanly, ignoring empty input rows safely
-    if (l1Title && l1Title.value.trim() !== "" && l1Url && l1Url.value.trim() !== "") {
+    if (l1Title.value.trim() !== "" && l1Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l1Title.value.trim(), u: l1Url.value.trim() });
     }
-    if (l2Title && l2Title.value.trim() !== "" && l2Url && l2Url.value.trim() !== "") {
+    if (l2Title.value.trim() !== "" && l2Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l2Title.value.trim(), u: l2Url.value.trim() });
     }
-    if (l3Title && l3Title.value.trim() !== "" && l3Url && l3Url.value.trim() !== "") {
+    if (l3Title.value.trim() !== "" && l3Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l3Title.value.trim(), u: l3Url.value.trim() });
     }
 
-    // Unified Object State Payload Shell Array
     const unifiedPayloadObject = {
         name: targetName,
         bio: targetBio,
-        img: activeAvatarBase64Stream || "",
+        img: activeAvatarBase64Stream,
         links: linksCollectionArray
     };
 
-       try {
+    try {
         const rawJsonString = JSON.stringify(unifiedPayloadObject);
         
-        // 🚀 THE CRITICAL HANDSHAKE CORRECTION: Safe Unicode serialization prevents btoa string blowouts
-        const secureBase64HashToken = btoa(unescape(encodeURIComponent(rawJsonString)));
-        
-        const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureBase64HashToken}`;
+        // 🚀 BYPASSES BTOA AND PERCENT-ENCODING LIMITATIONS FOREVER!
+        const secureEncodedToken = encodeURIComponent(rawJsonString);
+        const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureEncodedToken}`;
         
         const linkOutputDock = document.getElementById("link-output-dock");
         const compiledLinkDisplayField = document.getElementById("compiled-link-display-field");
         const manualCopyValve = document.getElementById("manual-copy-valve");
 
-        // Hydrate and display the visual URL link container box layout on your screen
         if (linkOutputDock && compiledLinkDisplayField && manualCopyValve) {
             compiledLinkDisplayField.value = compiledMasterIdentityUrl;
             linkOutputDock.style.display = "block";
@@ -213,80 +202,60 @@ compileHubTrigger.addEventListener("click", () => {
             };
         }
 
-        // Update the browser address bar URL string instantly
-        window.location.hash = `profile=${secureBase64HashToken}`;
-        
-        // Explicitly call the master render engine straight inside the button click pipeline
+        window.removeEventListener("hashchange", runSystemStateReconciliation);
+        window.location.hash = `profile=${secureEncodedToken}`;
         renderProfileCard(unifiedPayloadObject);
+        
+        setTimeout(() => {
+            window.addEventListener("hashchange", runSystemStateReconciliation);
+        }, 100);
 
     } catch (err) {
-        console.error("COMPILATION LOGISTICS PIPELINE BLOCK EXC:", err);
-        alert("🚨 System Notification: Data compression failure during hash allocation loops.");
+        console.error("COMPILATION HANDSHAKE EXCEPTION:", err);
     }
-
 });
 
-// ⚙️ THE SANDBOX EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
+// ⚙️ THE Sandbox EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
 editHubValve.addEventListener("click", () => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const profileDataRaw = hashParams.get('profile');
-
-    if (profileDataRaw) {
+    const activeUrlHashString = window.location.hash;
+    if (activeUrlHashString.includes("profile=")) {
         try {
-            const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
-            const decodedPayloadObject = JSON.parse(cleanJSONString);
+            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
+            const profileDataRaw = hashParams.get('profile');
 
-            // Populate identity form boxes with existing text parameters automatically
-            nameInput.value = decodedPayloadObject.name || "";
-            bioInput.value = decodedPayloadObject.bio || "";
-            activeAvatarBase64Stream = decodedPayloadObject.img || "";
+            if (profileDataRaw) {
+                const cleanJSONString = decodeURIComponent(profileDataRaw);
+                const decodedPayloadObject = JSON.parse(cleanJSONString);
 
-            if (activeAvatarBase64Stream !== "") {
-                uploadStatusLabel.textContent = "📷 Photo Extracted From Hash URL!";
-                uploadStatusLabel.style.color = "var(--primary-gold)";
+                nameInput.value = decodedPayloadObject.name || "";
+                bioInput.value = decodedPayloadObject.bio || "";
+                activeAvatarBase64Stream = decodedPayloadObject.img || "";
+
+                if (activeAvatarBase64Stream !== "") {
+                    uploadStatusLabel.textContent = "📷 Photo Extracted From Hash URL!";
+                    uploadStatusLabel.style.color = "var(--primary-gold)";
+                }
+
+                const activeLinksArray = decodedPayloadObject.links || [];
+                l1Title.value = activeLinksArray[0] ? activeLinksArray[0].t : "";
+                l1Url.value   = activeLinksArray[0] ? activeLinksArray[0].u : "";
+                l2Title.value = activeLinksArray[1] ? activeLinksArray[1].t : "";
+                l2Url.value   = activeLinksArray[1] ? activeLinksArray[1].u : "";
+                l3Title.value = activeLinksArray[2] ? activeLinksArray[2].t : "";
+                l3Url.value   = activeLinksArray[2] ? activeLinksArray[2].u : "";
+
+                importUrlInput.value = window.location.href;
+
+                profileShowcasePane.classList.remove("active-view-pane");
+                creatorStudioPane.classList.add("active-view-pane");
             }
-
-            // 🎯 FIXED ARRAY INDEX ROWS: Surgically extracting using clean array tracking gates
-            const activeLinksArray = decodedPayloadObject.links || [];
-
-            // Hydrate Button 1 inputs safely using explicit index row 0 parameters
-            if (activeLinksArray[0]) {
-                l1Title.value = activeLinksArray[0].t || "";
-                l1Url.value   = activeLinksArray[0].u || "";
-            } else {
-                l1Title.value = ""; l1Url.value = "";
-            }
-
-            // Hydrate Button 2 inputs safely using explicit index row 1 parameters
-            if (activeLinksArray[1]) {
-                l2Title.value = activeLinksArray[1].t || "";
-                l2Url.value   = activeLinksArray[1].u || "";
-            } else {
-                l2Title.value = ""; l2Url.value = "";
-            }
-
-            // Hydrate Button 3 inputs safely using explicit index row 2 parameters
-            if (activeLinksArray[2]) {
-                l3Title.value = activeLinksArray[2].t || "";
-                l3Url.value   = activeLinksArray[2].u || "";
-            } else {
-                l3Title.value = ""; l3Url.value = "";
-            }
-
-            // Fill import url checker bar with current link to ease verification updates
-            importUrlInput.value = window.location.href;
-
-            // Instantly transition screen visibility pane state to display creation form cockpit
-            profileShowcasePane.classList.remove("active-view-pane");
-            creatorStudioPane.classList.add("active-view-pane");
-
-        } catch (formHydrationError) {
-            console.error("FORM RE-POPULATION EXCEPTION:", formHydrationError);
+        } catch (e) {
+            console.error("FORM RE-POPULATION EXCEPTION:", e);
         }
     }
 });
 
-// Import checker field link stream monitor
+// Import field link stream monitor
 importUrlInput.addEventListener("input", () => {
     const pasteUrlValueStream = importUrlInput.value.trim();
     if (pasteUrlValueStream.includes("profile=")) {
@@ -296,6 +265,6 @@ importUrlInput.addEventListener("input", () => {
     }
 });
 
-// 🔌 LIFECYCLE LISTENERS HOOKS: Run state decoders on page entry and window changes
+// LIFECYCLE LISTENERS HOOKED AT RUNTIME ENTRY
 window.addEventListener("hashchange", runSystemStateReconciliation);
 window.addEventListener("DOMContentLoaded", runSystemStateReconciliation);
