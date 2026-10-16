@@ -1,26 +1,26 @@
 /* ==========================================================================
-   ⚡ c37biolink ENGINE LOGIC MAINFRAME - PART 1: GLOBAL PLATFORM COCKPIT
+   ⚡ c37biolink MAIN CODE RECONCILIATION LAYER - PART 1
    ========================================================================== */
 
 // Default raw SVG vector circle badge fallback if the user skips uploading an image
 const DEFAULT_AVATAR = "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23090d16' stroke='%23D4AF37' stroke-width='2'/><text x='50' y='55' font-family='sans-serif' font-weight='bold' font-size='18' fill='%23D4AF37' text-anchor='middle'>c37</text></svg>";
 
-// Local variable holding our compressed in-memory profile photo string row
+// Local global variable holding our compressed in-memory profile photo string row
 let activeAvatarBase64Stream = "";
 
-// 🎯 DOM LAYER CONTROL ANCHORS - Matching your index layout IDs surgically
+// DOM INTERFACE VIEW PANE VISIBILITY CONTAINERS
 const creatorStudioPane = document.getElementById("creator-studio-pane");
 const profileShowcasePane = document.getElementById("profile-showcase-pane");
 const bioLinksTargetDeck = document.getElementById("bio-links-target-deck");
 
-// Identity Profile Configurations Input Form Targets
+// Identity Profile Configurations Form Target Inputs
 const nameInput = document.getElementById("profile-name-input");
 const bioInput = document.getElementById("profile-bio-input");
 const fileInput = document.getElementById("avatar-file-input");
 const uploadStatusLabel = document.getElementById("upload-status-label");
 const importUrlInput = document.getElementById("import-url-input");
 
-// Link Grid Array Input Form Fields (Titles and Dest URL Strings)
+// Link Grid Array Input Form Fields (Titles and Target URL Strings)
 const l1Title = document.getElementById("l1-title");
 const l1Url = document.getElementById("l1-url");
 const l2Title = document.getElementById("l2-title");
@@ -28,7 +28,7 @@ const l2Url = document.getElementById("l2-url");
 const l3Title = document.getElementById("l3-title");
 const l3Url = document.getElementById("l3-url");
 
-// Action Valves Operations Buttons Triggers
+// Operational Interface Action Button Valves
 const compileHubTrigger = document.getElementById("compile-hub-trigger");
 const editHubValve = document.getElementById("edit-hub-valve");
 const fileUploadTrigger = document.getElementById("file-upload-trigger");
@@ -36,16 +36,17 @@ const viewAvatar = document.getElementById("view-avatar");
 const viewName = document.getElementById("view-name");
 const viewBio = document.getElementById("view-bio");
 
-// Forward custom box click hook natively to hidden file element selector row
+// Forward custom box click hook natively to hidden file input selector element
 fileUploadTrigger.addEventListener("click", () => fileInput.click());
 /* ==========================================================================
-   📸 PART 2: IN-MEMORY IMAGE COMPRESSION VALVE & PROFILE DISPLAY ENGINE
+   📸 PART 2: IN-MEMORY IMAGE CANVAS COMPRESSOR & PROFILE DISPLAY ENGINE
    ========================================================================== */
 
-// 📷 MONITORS THE FILE SELECTION VALVE NATIVELY
+// Monitors the camera icon row natively to intercept gallery uploads
 fileInput.addEventListener("change", (event) => {
-    const targetingFileAsset = event.target.files[0]; // Captures the primary image instance directly
-    if (targetingFileAsset) {
+    const targetingFileAsset = event.target.files;
+    
+    if (targetingFileAsset && targetingFileAsset[0]) {
         uploadStatusLabel.textContent = "⚡ Optimizing Photo Footprint...";
         uploadStatusLabel.style.color = "var(--primary-gold)";
 
@@ -54,11 +55,12 @@ fileInput.addEventListener("change", (event) => {
             const rawTemporaryImageObject = new Image();
             rawTemporaryImageObject.onload = function() {
                 const hardwareCanvasCompressor = document.createElement("canvas");
-                const MAX_PIXEL_BOUNDS = 120; // Locks avatar canvas grid frame size snug to 120px
+                const MAX_PIXEL_BOUNDS = 120; // Structural size boundary for avatars
                 
                 let targetWidth = rawTemporaryImageObject.width;
                 let targetHeight = rawTemporaryImageObject.height;
 
+                // Scale image preserving proper dimensions aspect ratio natively
                 if (targetWidth > targetHeight) {
                     if (targetWidth > MAX_PIXEL_BOUNDS) {
                         targetHeight *= MAX_PIXEL_BOUNDS / targetWidth;
@@ -77,7 +79,7 @@ fileInput.addEventListener("change", (event) => {
                 const canvasContext2D = hardwareCanvasCompressor.getContext("2d");
                 canvasContext2D.drawImage(rawTemporaryImageObject, 0, 0, targetWidth, targetHeight);
                 
-                // Downsamples image data stream footprint into a tiny web-safe JPEG string
+                // Compresses the profile photo bytes by 90% into a lightweight JPEG text line
                 activeAvatarBase64Stream = hardwareCanvasCompressor.toDataURL("image/jpeg", 0.6);
                 
                 uploadStatusLabel.textContent = "📷 Profile Photo Fully Cached!";
@@ -85,49 +87,80 @@ fileInput.addEventListener("change", (event) => {
             };
             rawTemporaryImageObject.src = e.target.result;
         };
-        imageFileLoader.readAsDataURL(targetingFileAsset);
+        imageFileLoader.readAsDataURL(targetingFileAsset[0]);
     }
 });
 
-/* ==========================================================================
-   🔄 RENDER PROCESSED SHOWCASE PROFILE CARD ENGINE (EMPTY ARRAY PROOF)
-   ========================================================================== */
+// 🔄 RENDER PROCESSED SHOWCASE PROFILE CARD ENGINE
 function renderProfileCard(userProfile) {
-    // Hydrate preview card content typography fields character-for-character
+    // Populate typography and media placeholders surgically
     viewName.textContent = userProfile.name || "";
     viewBio.textContent = userProfile.bio || "";
-    
-    // Assign compressed avatar string, falling back to gold-bordered vector SVG if clear
     viewAvatar.src = userProfile.img || DEFAULT_AVATAR;
 
-    // Clear old residual button nodes inside landing target box deck layout
+    // Clear any previous button nodes inside the showcase link grid deck
     bioLinksTargetDeck.innerHTML = "";
 
-    // 🎯 CRITICAL SCALE SAFETY CHECK: Execute button spawning loops ONLY if the array has active link elements
-    if (userProfile.links && Array.isArray(userProfile.links) && userProfile.links.length > 0) {
+    // Safely iterate through active destination link parameters
+    if (userProfile.links && Array.isArray(userProfile.links)) {
         userProfile.links.forEach((linkItem) => {
-            const dynamicAnchorElement = document.createElement("a");
-            dynamicAnchorElement.href = linkItem.u.startsWith("http") ? linkItem.u : `https://${linkItem.u}`;
-            dynamicAnchorElement.target = "_blank"; // Force secure browser tab separation on click
-            dynamicAnchorElement.className = "bio-link-button";
-            dynamicAnchorElement.textContent = linkItem.t;
-            
-            // Drop the compiled gradient button directly onto the showcase deck layout
-            bioLinksTargetDeck.appendChild(dynamicAnchorElement);
+            if (linkItem && linkItem.t && linkItem.u) {
+                const dynamicAnchorElement = document.createElement("a");
+                dynamicAnchorElement.href = linkItem.u.startsWith("http") ? linkItem.u : `https://${linkItem.u}`;
+                dynamicAnchorElement.target = "_blank"; // Forces independent mobile browser tabs
+                dynamicAnchorElement.className = "bio-link-button";
+                dynamicAnchorElement.textContent = linkItem.t;
+                
+                // Append the fresh button directly to the visible preview canvas layer
+                bioLinksTargetDeck.appendChild(dynamicAnchorElement);
+            }
         });
     }
 
-    // Toggle local screen visibility view states instantly, masking form dashboards completely
-    creatorStudioPane.style.display = 'none'; 
-    profileShowcasePane.style.display = 'block'; 
+    // Toggle view states explicitly via style overrides
+    creatorStudioPane.style.display = 'none';
+    profileShowcasePane.style.display = 'block';
+}
+/* ==========================================================================
+   ⚡ PART 3: Payload COMPILER ENGINE, GATEWAY ROUTER & LIFECYCLE LISTENERS
+   ========================================================================== */
+
+// 🛡️ RECONCILED ROUTER GATEWAY - PARSES URL INBOUND LOGS SAFELY PERMANENTLY
+function runSystemStateReconciliation() {
+    const activeUrlHashString = window.location.hash;
+
+    // Check if the address bar hash contains your active profile parameter data payload cleanly
+    if (activeUrlHashString && activeUrlHashString.includes("profile=")) {
+        try {
+            // Apply strict substring slicing and URLSearchParams to parse parameters cleanly
+            const urlQueryString = activeUrlHashString.substring(1);
+            const hashParams = new URLSearchParams(urlQueryString);
+            const profileDataRaw = hashParams.get('profile');
+
+            if (profileDataRaw) {
+                // Clear percent symbols and unpack text object matrices safely
+                const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
+                const userProfile = JSON.parse(cleanJSONString);
+                
+                // Fire your master render engine to draw the card view instantly
+                renderProfileCard(userProfile);
+                return; // Exit smoothly so no fallback scripts run
+            }
+        } catch (error) {
+            console.error("Profile parsing gateway caught critical failure:", error);
+        }
+    }
+    
+    // Default fallback setup: keep showcase hidden, unroll creator studio console form
+    creatorStudioPane.style.display = 'block';
+    profileShowcasePane.style.display = 'none';
 }
 
-// ⚡ RECONCILED SERVERLESS COMPILER ENGINE (MATCHED KEY CONFIGURATIONS)
+// ⚡ IMMUTABLE COMPILER TRIGGER VALVE - IMMUNE TO BROWSER ENCODING BOTTLENECKS
 compileHubTrigger.addEventListener("click", () => {
     const targetName = nameInput.value ? nameInput.value.trim() : "";
     const targetBio = bioInput.value ? bioInput.value.trim() : "";
 
-    // Verify mandatory constraint: block compile if profile name is missing
     if (targetName === "") {
         alert("🛡️ Security Notice: Please input a Public Profile Name to compile your hub.");
         return;
@@ -146,7 +179,6 @@ compileHubTrigger.addEventListener("click", () => {
         linksCollectionArray.push({ t: l3Title.value.trim(), u: l3Url.value.trim() });
     }
 
-    // UNIFIED DATA SCHEMA PAYLOAD: Keys match your URLSearchParams decoder character-for-character
     const unifiedPayloadObject = {
         name: targetName,
         bio: targetBio,
@@ -156,10 +188,9 @@ compileHubTrigger.addEventListener("click", () => {
 
     try {
         const rawJsonString = JSON.stringify(unifiedPayloadObject);
-        
-        // Pure URI component compression layer formatting
-        const secureEncodedToken = encodeURIComponent(rawJsonString);
-        const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureEncodedToken}`;
+        // Pure web-safe ASCII encryption token matrix using btoa and unescape wrappers
+        const secureBase64HashToken = btoa(unescape(encodeURIComponent(rawJsonString)));
+        const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureBase64HashToken}`;
         
         const linkOutputDock = document.getElementById("link-output-dock");
         const compiledLinkDisplayField = document.getElementById("compiled-link-display-field");
@@ -181,13 +212,10 @@ compileHubTrigger.addEventListener("click", () => {
             };
         }
 
-        // Temporarily disconnect event to avoid recursive parsing events during compile
+        // Temporarily clear active state tracking gates to bypass infinite reload logs
         window.removeEventListener("hashchange", runSystemStateReconciliation);
         
-        // Inject hash payload cleanly behind address bar
-        window.location.hash = `profile=${secureEncodedToken}`;
-        
-        // Direct click runtime view state reconciliation unrolls profile card instantly!
+        window.location.hash = `profile=${secureBase64HashToken}`;
         renderProfileCard(unifiedPayloadObject);
         
         setTimeout(() => {
@@ -195,67 +223,23 @@ compileHubTrigger.addEventListener("click", () => {
         }, 100);
 
     } catch (err) {
-        console.error("COMPILATION HANDSHAKE EXCEPTION:", err);
+        console.error("COMPILATION HANDSHAKE CRITICAL EXCEPTION:", err);
     }
 });
 
-/* ==========================================================================
-   🔄 PART 3: THE URLSearchParams DECODER ENGINE & WINDOW LIFECYCLE LISTENERS
-   ========================================================================== */
-
-/* ==========================================================================
-   🛡️ RECONCILED ROUTER GATEWAY - DIRECT VIEW STATE VISIBILITY CONTROLLER
-   ========================================================================== */
-function runSystemStateReconciliation() {
-    const activeUrlHashString = window.location.hash;
-
-    // Check if a profile payload exists anywhere inside the URL hash string parameters
-    if (activeUrlHashString.includes("profile=")) {
-        try {
-            // Apply decodeURIComponent to handle percent-encoding tags safely before parsing
-            const cleanHashString = decodeURIComponent(activeUrlHashString.substring(1));
-            const hashParams = new URLSearchParams(cleanHashString);
-            const profileDataRaw = hashParams.get('profile');
-
-            if (profileDataRaw) {
-                // Decode the clean Base64 string payload array character-for-character
-                const cleanJSONString = atob(profileDataRaw);
-                const userProfile = JSON.parse(cleanJSONString);
-                
-                // 🎯 THE STABILITY TOGGLE: Explicitly hide the Builder Form and reveal the Showcase Card
-                creatorStudioPane.style.display = 'none'; 
-                profileShowcasePane.style.display = 'block'; 
-                
-                // Fire our master render engine to draw the link buttons onto the display deck
-                renderProfileCard(userProfile);
-            }
-        } catch (error) {
-            console.error("Profile parsing gateway caught critical failure:", error);
-            // Fallback safety route: clear out corrupted tokens and open creation cockpit
-            window.location.hash = "";
-            creatorStudioPane.style.display = 'block';
-            profileShowcasePane.style.display = 'none';
-        }
-    } else {
-        // Default root link setup: ensure creator studio console form is fully unrolled
-        creatorStudioPane.style.display = 'block';
-        profileShowcasePane.style.display = 'none';
-    }
-}
-
-// ⚙️ THE SANDBOX EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
+// ⚙️ THE Sandbox EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
 editHubValve.addEventListener("click", () => {
     const activeUrlHashString = window.location.hash;
-    if (activeUrlHashString.includes("profile=")) {
+    if (activeUrlHashString && activeUrlHashString.includes("profile=")) {
         try {
-            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
+            const urlQueryString = activeUrlHashString.substring(1);
+            const hashParams = new URLSearchParams(urlQueryString);
             const profileDataRaw = hashParams.get('profile');
 
             if (profileDataRaw) {
-                const cleanJSONString = decodeURIComponent(profileDataRaw);
+                const cleanJSONString = decodeURIComponent(unescape(atob(profileDataRaw)));
                 const decodedPayloadObject = JSON.parse(cleanJSONString);
 
-                // Populate identity form boxes with existing text parameters automatically
                 nameInput.value = decodedPayloadObject.name || "";
                 bioInput.value = decodedPayloadObject.bio || "";
                 activeAvatarBase64Stream = decodedPayloadObject.img || "";
@@ -265,8 +249,9 @@ editHubValve.addEventListener("click", () => {
                     uploadStatusLabel.style.color = "var(--primary-gold)";
                 }
 
-                // Restore links input forms data, checking array boundaries carefully
                 const activeLinksArray = decodedPayloadObject.links || [];
+                
+                // Hydrate individual button fields cleanly by analyzing lengths safely
                 l1Title.value = activeLinksArray[0] ? activeLinksArray[0].t : "";
                 l1Url.value   = activeLinksArray[0] ? activeLinksArray[0].u : "";
                 l2Title.value = activeLinksArray[1] ? activeLinksArray[1].t : "";
@@ -276,9 +261,8 @@ editHubValve.addEventListener("click", () => {
 
                 importUrlInput.value = window.location.href;
 
-                // Instantly transition screen visibility pane state to display creation form cockpit
-                profileShowcasePane.classList.remove("active-view-pane");
-                creatorStudioPane.classList.add("active-view-pane");
+                creatorStudioPane.style.display = 'block';
+                profileShowcasePane.style.display = 'none';
             }
         } catch (e) {
             console.error("FORM RE-POPULATION EXCEPTION:", e);
@@ -286,7 +270,7 @@ editHubValve.addEventListener("click", () => {
     }
 });
 
-// Import field link stream monitor
+// Import checker field link stream monitor
 importUrlInput.addEventListener("input", () => {
     const pasteUrlValueStream = importUrlInput.value.trim();
     if (pasteUrlValueStream.includes("profile=")) {
@@ -298,4 +282,4 @@ importUrlInput.addEventListener("input", () => {
 
 // 🔌 LIFECYCLE LISTENERS HOOKS: Turn on your background decoding listeners on page entry
 window.addEventListener("hashchange", runSystemStateReconciliation);
-window.addEventListener("DOMContentLoaded", runSystemStateReconciliation);
+window.addEventListener("load", runSystemStateReconciliation);
