@@ -198,36 +198,42 @@ compileHubTrigger.addEventListener("click", () => {
    🔄 PART 3: THE URLSearchParams DECODER ENGINE & WINDOW LIFECYCLE LISTENERS
    ========================================================================== */
 
-// 🛡️ RECONCILED ROUTER GATEWAY WITH SECURE STATE DECODING LOOKUPS
+/* ==========================================================================
+   🛡️ RECONCILED ROUTER GATEWAY - PARSES AND TOGGLES UI VISIBILITY MODES
+   ========================================================================== */
 function runSystemStateReconciliation() {
     const activeUrlHashString = window.location.hash;
 
-    // Check if the address bar hash starts with our active profile parameter data
-    if (activeUrlHashString.includes("profile=")) {
+    // 1. Check if a profile payload exists in the URL hash string parameters
+    if (activeUrlHashString && activeUrlHashString.includes('profile=')) {
         try {
-            // Use native URLSearchParams to isolate and pull out the raw profile token cleanly
-            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
+            // Apply decodeURIComponent to handle percent-encoding tags before parsing parameters
+            const cleanHashString = decodeURIComponent(activeUrlHashString.substring(1));
+            const hashParams = new URLSearchParams(cleanHashString);
             const profileDataRaw = hashParams.get('profile');
-
+            
             if (profileDataRaw) {
-                // Pristine URI decoding restores our clean JSON text array instantly
-                const cleanJSONString = decodeURIComponent(profileDataRaw);
+                // Decode the clean Base64 string payload array
+                const cleanJSONString = atob(profileDataRaw);
                 const userProfile = JSON.parse(cleanJSONString);
                 
-                // Fire our master render engine to draw the card view instantly
-                renderProfileCard(userProfile);
+                // 2. MATCHED ELEMENT IDs TOGGLE: Hide the Builder Form, Show the Profile Card
+                creatorStudioPane.style.display = 'none'; 
+                profileShowcasePane.style.display = 'block'; 
+                
+                // 3. Render the compiled parameters data onto the profile layout elements
+                renderProfileCard(userProfile); 
             }
         } catch (error) {
-            console.error("Profile decoding failed at runtime gateway:", error);
-            // Fallback safety route: clear out corrupted tokens and load creation forms cockpit
-            window.location.hash = "";
-            profileShowcasePane.classList.remove("active-view-pane");
-            creatorStudioPane.classList.add("active-view-pane");
+            console.error("Routing/Parsing failed at system gateway:", error);
+            // If data cargo token is corrupted, drop user safely into the creator interface form by default
+            creatorStudioPane.style.display = 'block';
+            profileShowcasePane.style.display = 'none';
         }
     } else {
-        // Default root link view state setup: keep showcase hidden, unroll creator studio console
-        profileShowcasePane.classList.remove("active-view-pane");
-        creatorStudioPane.classList.add("active-view-pane");
+        // No profile cargo found in URL, safely show the Main Creator Console form dashboard
+        creatorStudioPane.style.display = 'block';
+        profileShowcasePane.style.display = 'none';
     }
 }
 
