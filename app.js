@@ -235,11 +235,13 @@ function runSystemStateReconciliation() {
         creatorStudioPane.classList.add("active-view-pane");
     }
 }
-
-// ⚙️ THE SANDBOX EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
+/* ==========================================================================
+   ⚙️ THE SANDBOX EDIT CONTROL VALVE: AUTOMATED ARRAY INDEX PRE-FILL HYDRATION
+   ========================================================================== */
 editHubValve.addEventListener("click", () => {
     const activeUrlHashString = window.location.hash;
 
+    // Check if the address string bar contains active profile cargo parameters
     if (activeUrlHashString.startsWith("#profile=")) {
         try {
             const targetBase64Token = activeUrlHashString.replace("#profile=", "");
@@ -247,33 +249,41 @@ editHubValve.addEventListener("click", () => {
             const decodedPayloadObject = JSON.parse(decodedJsonTextStream);
 
             // Populate identity form boxes with existing text parameters automatically
-            nameInput.value = decodedPayloadObject.name;
+            nameInput.value = decodedPayloadObject.name || "";
             bioInput.value = decodedPayloadObject.bio || "";
             activeAvatarBase64Stream = decodedPayloadObject.img || "";
 
-            // Update photo selector status message to inform user data is ready for modification
+            // Update photo selector status message if image binary is present in hash
             if (activeAvatarBase64Stream !== "") {
                 uploadStatusLabel.textContent = "📷 Photo Extracted From Hash URL!";
                 uploadStatusLabel.style.color = "var(--primary-gold)";
             }
 
-            // Restore links input forms data, checking indexing boundaries carefully
-            l1Title.value = decodedPayloadObject.links && decodedPayloadObject.links[0] ? decodedPayloadObject.links[0].t : "";
-            l1Url.value   = decodedPayloadObject.links && decodedPayloadObject.links[0] ? decodedPayloadObject.links[0].u : "";
-            l2Title.value = decodedPayloadObject.links && decodedPayloadObject.links[1] ? decodedPayloadObject.links[1].t : "";
-            l2Url.value   = decodedPayloadObject.links && decodedPayloadObject.links[1] ? decodedPayloadObject.links[1].u : "";
-            l3Title.value = decodedPayloadObject.links && decodedPayloadObject.links[2] ? decodedPayloadObject.links[2].t : "";
-            l3Url.value   = decodedPayloadObject.links && decodedPayloadObject.links[2] ? decodedPayloadObject.links[2].u : "";
+            // 🎯 FIXED ARRAY INDEX ROWS: Surgically extraction using clean array tracking gates
+            const activeLinksArray = decodedPayloadObject.links || [];
+
+            // Hydrate Button 1 inputs safely using explicit index row 0 parameters
+            l1Title.value = activeLinksArray[0] ? activeLinksArray[0].t : "";
+            l1Url.value   = activeLinksArray[0] ? activeLinksArray[0].u : "";
+
+            // Hydrate Button 2 inputs safely using explicit index row 1 parameters
+            l2Title.value = activeLinksArray[1] ? activeLinksArray[1].t : "";
+            l2Url.value   = activeLinksArray[1] ? activeLinksArray[1].u : "";
+
+            // Hydrate Button 3 inputs safely using explicit index row 2 parameters
+            l3Title.value = activeLinksArray[2] ? activeLinksArray[2].t : "";
+            l3Url.value   = activeLinksArray[2] ? activeLinksArray[2].u : "";
 
             // Fill import url checker bar with current link to ease verification updates
             importUrlInput.value = window.location.href;
 
-            // Instantly route user back to the studio input console card deck view
+            // Instantly transition screen visibility pane state to display creation form cockpit
             profileShowcasePane.classList.remove("active-view-pane");
             creatorStudioPane.classList.add("active-view-pane");
 
         } catch (formHydrationError) {
-            console.error("FORM RE-POPULATION SYSTEM EXCEPTION:", formHydrationError);
+            console.error("FORM RE-POPULATION CRITICAL EXCEPTION FLAGGED:", formHydrationError);
+            alert("🚨 System Notification: Failed to map profile array indexes back into console inputs.");
         }
     }
 });
