@@ -117,41 +117,42 @@ function renderProfileCard(userProfile) {
     creatorStudioPane.classList.remove("active-view-pane");
     profileShowcasePane.classList.add("active-view-pane");
 }
-/* ==========================================================================
-   ⚡ PART 3: SERVERLESS COMPILER ENGINE (IMMUNE TO RECURSIVE LOOPS)
-   ========================================================================== */
+// ⚡ RECONCILED SERVERLESS COMPILER ENGINE (MATCHED KEY CONFIGURATIONS)
 compileHubTrigger.addEventListener("click", () => {
-    const targetName = nameInput.value.trim();
-    const targetBio = bioInput.value.trim();
+    const targetName = nameInput.value ? nameInput.value.trim() : "";
+    const targetBio = bioInput.value ? bioInput.value.trim() : "";
 
-    // Structural validation check
+    // Verify mandatory constraint: block compile if profile name is missing
     if (targetName === "") {
-        alert("🛡️ Please input a Public Profile Name to compile your hub.");
+        alert("🛡️ Security Notice: Please input a Public Profile Name to compile your hub.");
         return;
     }
 
     const linksCollectionArray = [];
-    if (l1Title.value.trim() !== "" && l1Url.value.trim() !== "") {
+    
+    // Scrape form data values cleanly, ignoring empty input rows safely
+    if (l1Title && l1Title.value.trim() !== "" && l1Url && l1Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l1Title.value.trim(), u: l1Url.value.trim() });
     }
-    if (l2Title.value.trim() !== "" && l2Url.value.trim() !== "") {
+    if (l2Title && l2Title.value.trim() !== "" && l2Url && l2Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l2Title.value.trim(), u: l2Url.value.trim() });
     }
-    if (l3Title.value.trim() !== "" && l3Url.value.trim() !== "") {
+    if (l3Title && l3Title.value.trim() !== "" && l3Url && l3Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l3Title.value.trim(), u: l3Url.value.trim() });
     }
 
+    // UNIFIED DATA SCHEMA PAYLOAD: Keys match your URLSearchParams decoder character-for-character
     const unifiedPayloadObject = {
         name: targetName,
         bio: targetBio,
-        img: activeAvatarBase64Stream,
+        img: activeAvatarBase64Stream || "",
         links: linksCollectionArray
     };
 
     try {
         const rawJsonString = JSON.stringify(unifiedPayloadObject);
         
-        // 🚀 THE BREAKTHROUGH UPGRADE: Pure encodeURIComponent bypasses btoa limitations forever!
+        // Pure URI component compression layer formatting
         const secureEncodedToken = encodeURIComponent(rawJsonString);
         const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureEncodedToken}`;
         
@@ -159,6 +160,7 @@ compileHubTrigger.addEventListener("click", () => {
         const compiledLinkDisplayField = document.getElementById("compiled-link-display-field");
         const manualCopyValve = document.getElementById("manual-copy-valve");
 
+        // Hydrate and display the visual URL link container box layout on your screen
         if (linkOutputDock && compiledLinkDisplayField && manualCopyValve) {
             compiledLinkDisplayField.value = compiledMasterIdentityUrl;
             linkOutputDock.style.display = "block";
@@ -174,16 +176,15 @@ compileHubTrigger.addEventListener("click", () => {
             };
         }
 
-        // Temporarily disconnect router gate to block hash change reload loop cycles
+        // Temporarily disconnect event to avoid recursive parsing events during compile
         window.removeEventListener("hashchange", runSystemStateReconciliation);
         
-        // Push the token directly into the browser URL bar character stream
+        // Inject hash payload cleanly behind address bar
         window.location.hash = `profile=${secureEncodedToken}`;
         
-        // Instantly switch screen pane visibility views and render profile card
+        // Direct click runtime view state reconciliation unrolls profile card instantly!
         renderProfileCard(unifiedPayloadObject);
         
-        // Safely re-hook active background listeners right after deployment locks
         setTimeout(() => {
             window.addEventListener("hashchange", runSystemStateReconciliation);
         }, 100);
@@ -192,6 +193,7 @@ compileHubTrigger.addEventListener("click", () => {
         console.error("COMPILATION HANDSHAKE EXCEPTION:", err);
     }
 });
+
 /* ==========================================================================
    🔄 PART 3: THE URLSearchParams DECODER ENGINE & WINDOW LIFECYCLE LISTENERS
    ========================================================================== */
