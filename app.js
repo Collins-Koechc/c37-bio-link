@@ -46,131 +46,136 @@ fileUploadTrigger.addEventListener("click", () => {
     fileInput.click();
 });
 
-// Monitors the file input valve container for the exact millisecond a file is selected
+/* ==========================================================================
+   📷 IN-MEMORY IMAGE CANVAS COMPRESSOR (KILLS BROWSER STRING BLOWOUTS)
+   ========================================================================== */
 fileInput.addEventListener("change", (event) => {
-    const targetingFileAsset = event.target.files[0];
+    const targetingFileAsset = event.target.files[0]; // Surgically targets the primary file token
     
-    // Safety verification check: execute only if the target array contains a valid file instance
     if (targetingFileAsset) {
-        // Initialize the browser's native client-side file reading engine loop
-        const clientSideFileReaderEngine = new FileReader();
-        
-        // Update dashboard status row text dynamically to show parsing operations are executing
-        uploadStatusLabel.textContent = "⚡ Syncing Profile Photo Binary...";
+        uploadStatusLabel.textContent = "⚡ Optimizing Photo Footprint...";
         uploadStatusLabel.style.color = "var(--primary-gold)";
 
-        // Core compilation handshake: executes the instant the image file is fully parsed in memory
-        clientSideFileReaderEngine.onload = function(e) {
-            // Scrape the raw, compressed Base64 alphanumeric string data straight out of the stream
-            activeAvatarBase64Stream = e.target.result;
-            
-            // Visual confirmation hook: update the label row badge to alert user of successful conversion
-            uploadStatusLabel.textContent = "📷 Profile Photo Fully Cached!";
-            uploadStatusLabel.style.color = "#ffffff";
-            fileUploadTrigger.style.borderColor = "var(--primary-gold)";
-        };
+        const imageFileLoader = new FileReader();
+        imageFileLoader.onload = function(e) {
+            const rawTemporaryImageObject = new Image();
+            rawTemporaryImageObject.onload = function() {
+                // Initialize an in-memory canvas container layout layer
+                const hardwareCanvasCompressor = document.createElement("canvas");
+                const MAX_PIXEL_BOUNDS = 120; // Forces avatar box dimensions snugly to 120px
+                
+                let targetWidth = rawTemporaryImageObject.width;
+                let targetHeight = rawTemporaryImageObject.height;
 
-        // Convert the user's physical gallery file asset directly into an encoded data URL string loop
-        clientSideFileReaderEngine.readAsDataURL(targetingFileAsset);
+                // Mathematical scaling proportion logic to preserve image aspect ratio
+                if (targetWidth > targetHeight) {
+                    if (targetWidth > MAX_PIXEL_BOUNDS) {
+                        targetHeight *= MAX_PIXEL_BOUNDS / targetWidth;
+                        targetWidth = MAX_PIXEL_BOUNDS;
+                    }
+                } else {
+                    if (targetHeight > MAX_PIXEL_BOUNDS) {
+                        targetWidth *= MAX_PIXEL_BOUNDS / targetHeight;
+                        targetHeight = MAX_PIXEL_BOUNDS;
+                    }
+                }
+
+                hardwareCanvasCompressor.width = targetWidth;
+                hardwareCanvasCompressor.height = targetHeight;
+                
+                const canvasContext2D = hardwareCanvasCompressor.getContext("2d");
+                canvasContext2D.drawImage(rawTemporaryImageObject, 0, 0, targetWidth, targetHeight);
+                
+                // Squeezes image data footprint by 90% into a lightweight web-safe JPEG string
+                activeAvatarBase64Stream = hardwareCanvasCompressor.toDataURL("image/jpeg", 0.7);
+                
+                uploadStatusLabel.textContent = "📷 Photo Compacted & Cached!";
+                uploadStatusLabel.style.color = "#ffffff";
+            };
+            rawTemporaryImageObject.src = e.target.result;
+        };
+        imageFileLoader.readAsDataURL(targetingFileAsset);
     }
 });
+
 /* ==========================================================================
-   ⚡ THE SERVERLESS DATA SERIALIZATION AND COMPILATION MATRIX VALVE
+   ⚡ SERVERLESS DATA SERIALIZATION AND ENCRYPTION COMPILER VALVE
    ========================================================================== */
-
-// Monitors your gold button row for the exact millisecond the compile trigger fires
 compileHubTrigger.addEventListener("click", () => {
-    // Scrape values cleanly out of the profile identity forms
-    const targetProfileName = nameInput.value.trim();
-    const targetProfileBio = bioInput.value.trim();
+    // Scrape values cleanly out of the active input forms
+    const targetName = nameInput.value.trim();
+    const targetBio = bioInput.value.trim();
 
-    // Verify mandatory constraint: prevent compilation if the user typed no profile name
-    if (targetProfileName === "") {
+    // Verify structural constraint: prevent compile if name field is empty
+    if (targetName === "") {
         alert("🛡️ C37 Security Notice: Please input a Public Profile Name to compile your hub.");
         return;
     }
 
-    // Build a structured, lightweight local state object array to pack our link entries
-    const linkGridsCargoArray = [];
-
-    // Filter Loop 1: Audit Primary Input Box parameters
+    const linksCollectionArray = [];
+    
+    // Filter rows 1, 2, and 3, pruning away empty input fields safely
     if (l1Title.value.trim() !== "" && l1Url.value.trim() !== "") {
-        linkGridsCargoArray.push({ t: l1Title.value.trim(), u: l1Url.value.trim() });
+        linksCollectionArray.push({ t: l1Title.value.trim(), u: l1Url.value.trim() });
     }
-
-    // Filter Loop 2: Audit Secondary Input Box parameters (Pruned safely if empty)
     if (l2Title.value.trim() !== "" && l2Url.value.trim() !== "") {
-        linkGridsCargoArray.push({ t: l2Title.value.trim(), u: l2Url.value.trim() });
+        linksCollectionArray.push({ t: l2Title.value.trim(), u: l2Url.value.trim() });
     }
-
-    // Filter Loop 3: Audit Tertiary Input Box parameters (Pruned safely if empty)
     if (l3Title.value.trim() !== "" && l3Url.value.trim() !== "") {
-        linkGridsCargoArray.push({ t: l3Title.value.trim(), u: l3Url.value.trim() });
+        linksCollectionArray.push({ t: l3Title.value.trim(), u: l3Url.value.trim() });
     }
 
-    // Assemble the complete global state profile package payload
-    const sovereignProfileMasterPayload = {
-        n: targetProfileName,
-        b: targetProfileBio,
-        i: activeAvatarBase64Stream, // Encodes our in-memory picture binary string row
-        l: linkGridsCargoArray       // Only contains active, filled link objects
+    // UNIFIED STRUCTURAL SCHEMA: Key names mapped character-for-character with viewer logic
+    const unifiedPayloadObject = {
+        name: targetName,
+        bio: targetBio,
+        img: activeAvatarBase64Stream,
+        links: linksCollectionArray
     };
+
     try {
-        // Convert our JavaScript object payload cleanly into a raw text string line row
-        const unifiedJsonPayloadString = JSON.stringify(sovereignProfileMasterPayload);
+        const rawJsonString = JSON.stringify(unifiedPayloadObject);
         
-        // Execute Base64 Binary-to-ASCII Encryption (btoa) to scramble text characters websafely
-        const cryptographicBase64HashToken = btoa(unescape(encodeURIComponent(unifiedJsonPayloadString)));
+        // Web-safe URI component mapping to protect symbols and special characters from corruption
+        const secureBase64HashToken = btoa(encodeURIComponent(rawJsonString));
         
-        // Construct your permanent, standalone database-free URL link address string
-        const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${cryptographicBase64HashToken}`;
+        // Construct your permanent standalone URL hash link address string
+        const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureBase64HashToken}`;
         
-        // 🎯 USER EXPERIENCE UPGRADE: Target our dynamic output dock components
+        // Capture output elements dynamically from the active index DOM tree
         const linkOutputDock = document.getElementById("link-output-dock");
         const compiledLinkDisplayField = document.getElementById("compiled-link-display-field");
         const manualCopyValve = document.getElementById("manual-copy-valve");
 
-        // Hydrate the visual text area field with their raw live URL link address character-for-character
+        // Inject compiled string directly into read-only terminal display box
         compiledLinkDisplayField.value = compiledMasterIdentityUrl;
         
-        // Unroll the hidden display box block smoothly onto their screen interface layout
+        // Turn on visibility block and smoothly glide viewport down to reveal output dock
         linkOutputDock.style.display = "block";
-        
-        // Automatically smoothly glide their viewport display frame straight down to look at the link box
         linkOutputDock.scrollIntoView({ behavior: "smooth" });
 
-        // Wire up our secondary manual copy button to handle clipboard transport hooks cleanly
+        // Bind interactive copy button event actions cleanly
         manualCopyValve.onclick = function() {
             navigator.clipboard.writeText(compiledMasterIdentityUrl).then(() => {
-                // Flash feedback messages to guide user confidence tracking layout logs
-                manualCopyValve.textContent = "✅ URL COPIED SUCCESSFULLY!";
-                manualCopyValve.style.background = "#ffffff";
-                manualCopyValve.style.color = "var(--bg-deep)";
-                
-                setTimeout(() => {
-                    manualCopyValve.textContent = "📋 Copy Link To Clipboard";
-                    manualCopyValve.style.background = "var(--primary-gold)";
-                    manualCopyValve.style.color = "#020408";
-                }, 2500);
+                // Instantly notify user of successful asset tracking delivery via text flash
+                manualCopyValve.textContent = "✅ COPIED TO CLIPBOARD!";
+                setTimeout(() => { manualCopyValve.textContent = "📋 Copy Link To Clipboard"; }, 2500);
             }).catch(() => {
-                // Fallback loop: if local browser protocol blocks clipboard API, auto-select text for easy manual copying
+                // Fallback loop: auto-select text layout parameters if clipboard permission is blocked local
                 compiledLinkDisplayField.select();
-                alert("📋 Please copy the highlighted web address link text string displayed inside the box manually right now!");
+                alert("Please copy the highlighted web address link manually right now inside the box container!");
             });
         };
 
-        // Update main compile trigger button text parameters safely
-        compileHubTrigger.textContent = "✨ Profile Compiled Successfully!";
-        setTimeout(() => {
-            compileHubTrigger.textContent = "⚡ Compile Enterprise Bio-Link";
-        }, 3000);
+        // Update branch hash parameters instantly to trigger reactive rendering changes live
+        window.location.hash = `profile=${secureBase64HashToken}`;
 
-    } catch (compilationErrorMatrix) {
-        console.error("CRITICAL ENCRYPTION HANDSHAKE EXCEPTION:", compilationErrorMatrix);
-        alert("🚨 System Layout Error: Failed to scramble data stream packages. Ensure your text characters are standard alphanumeric strings.");
+    } catch (err) {
+        console.error("COMPILATION HANDSHAKE CRITICAL ERROR:", err);
+        alert("🚨 System Layout Error: Data stream corruption detected during serialization processing loops.");
     }
-
 });
+
 /* ==========================================================================
    🔄 THE URL STATE DECODER ENGINE AND SYSTEM RECONCILIATION LAYER
    ========================================================================== */
@@ -185,29 +190,30 @@ function runSystemStateReconciliation() {
             // Extract the pure Base64 cryptographic hash token out of the string row
             const targetBase64Token = activeUrlHashString.replace("#profile=", "");
             
-            // Execute Base64 ASCII-to-Binary Decryption (atob) to reverse the scramble loop
-            const decodedJsonTextStream = decodeURIComponent(escape(atob(targetBase64Token)));
+            // Execute Base64 ASCII-to-Binary Decryption (atob) and reverse URI encoding
+            const decodedJsonTextStream = decodeURIComponent(atob(targetBase64Token));
             
             // Unpack the decoded text stream cleanly back into a JavaScript object package
-            const profileStateDataPayload = JSON.parse(decodedJsonTextStream);
+            const decodedPayloadObject = JSON.parse(decodedJsonTextStream);
 
             // 👤 HYDRATE PREVIEW CARD TYPOGRAPHY AND IMAGE CONTENT MARGINS
-            viewName.textContent = profileStateDataPayload.n;
-            viewBio.textContent = profileStateDataPayload.b || "";
+            viewName.textContent = decodedPayloadObject.name;
+            viewBio.textContent = decodedPayloadObject.bio || "";
             
             // Assign converted avatar picture string, falling back to vector SVG if clear
-            viewAvatar.src = profileStateDataPayload.i || DEFAULT_AVATAR;
+            viewAvatar.src = decodedPayloadObject.img || DEFAULT_AVATAR;
 
             // Clear old residual button components inside the landing deck target box
             bioLinksTargetDeck.innerHTML = "";
 
             // Dynamic Button Spawning Loop: map active entries out of the array cargo
-            profileStateDataPayload.l.forEach((individualLinkObject) => {
+            decodedPayloadObject.links.forEach((linkItem) => {
                 const dynamicAnchorElement = document.createElement("a");
-                dynamicAnchorElement.href = individualLinkObject.u;
+                // Safety protocol: ensure links feature protocol anchors to prevent local path breaking
+                dynamicAnchorElement.href = linkItem.u.startsWith("http") ? linkItem.u : `https://${linkItem.u}`;
                 dynamicAnchorElement.target = "_blank"; // Force secure tab separation on click
                 dynamicAnchorElement.className = "bio-link-button";
-                dynamicAnchorElement.textContent = individualLinkObject.t;
+                dynamicAnchorElement.textContent = linkItem.t;
                 
                 // Drop the compiled gradient button directly onto the showcase deck layout
                 bioLinksTargetDeck.appendChild(dynamicAnchorElement);
@@ -217,9 +223,9 @@ function runSystemStateReconciliation() {
             creatorStudioPane.classList.remove("active-view-pane");
             profileShowcasePane.classList.add("active-view-pane");
 
-        } catch (decryptionHandshakeException) {
-            console.error("CRITICAL ROUTING DECODER FAILURE:", decryptionHandshakeException);
-            alert("🚨 System Warning: Broken profile link signature tracking. Redirecting to your Creator Console cockpit form.");
+        } catch (decryptionException) {
+            console.error("ROUTING DECODER CRITICAL FAILURE:", decryptionException);
+            alert("🚨 System Warning: Invalid or corrupted profile link format. Restoring Creator Console workspace.");
             window.location.hash = "";
         }
 
@@ -237,27 +243,27 @@ editHubValve.addEventListener("click", () => {
     if (activeUrlHashString.startsWith("#profile=")) {
         try {
             const targetBase64Token = activeUrlHashString.replace("#profile=", "");
-            const decodedJsonTextStream = decodeURIComponent(escape(atob(targetBase64Token)));
-            const profileStateDataPayload = JSON.parse(decodedJsonTextStream);
+            const decodedJsonTextStream = decodeURIComponent(atob(targetBase64Token));
+            const decodedPayloadObject = JSON.parse(decodedJsonTextStream);
 
             // Populate identity form boxes with existing text parameters automatically
-            nameInput.value = profileStateDataPayload.n;
-            bioInput.value = profileStateDataPayload.b || "";
-            activeAvatarBase64Stream = profileStateDataPayload.i || "";
+            nameInput.value = decodedPayloadObject.name;
+            bioInput.value = decodedPayloadObject.bio || "";
+            activeAvatarBase64Stream = decodedPayloadObject.img || "";
 
             // Update photo selector status message to inform user data is ready for modification
             if (activeAvatarBase64Stream !== "") {
-                uploadStatusLabel.textContent = "📷 Photo Loaded From Active Link!";
+                uploadStatusLabel.textContent = "📷 Photo Extracted From Hash URL!";
                 uploadStatusLabel.style.color = "var(--primary-gold)";
             }
 
-            // Restore links input forms data, pre-filling only if elements are index tracked
-            l1Title.value = profileStateDataPayload.l[0] ? profileStateDataPayload.l[0].t : "";
-            l1Url.value   = profileStateDataPayload.l[0] ? profileStateDataPayload.l[0].u : "";
-            l2Title.value = profileStateDataPayload.l[1] ? profileStateDataPayload.l[1].t : "";
-            l2Url.value   = profileStateDataPayload.l[1] ? profileStateDataPayload.l[1].u : "";
-            l3Title.value = profileStateDataPayload.l[2] ? profileStateDataPayload.l[2].t : "";
-            l3Url.value   = profileStateDataPayload.l[2] ? profileStateDataPayload.l[2].u : "";
+            // Restore links input forms data, checking indexing boundaries carefully
+            l1Title.value = decodedPayloadObject.links && decodedPayloadObject.links[0] ? decodedPayloadObject.links[0].t : "";
+            l1Url.value   = decodedPayloadObject.links && decodedPayloadObject.links[0] ? decodedPayloadObject.links[0].u : "";
+            l2Title.value = decodedPayloadObject.links && decodedPayloadObject.links[1] ? decodedPayloadObject.links[1].t : "";
+            l2Url.value   = decodedPayloadObject.links && decodedPayloadObject.links[1] ? decodedPayloadObject.links[1].u : "";
+            l3Title.value = decodedPayloadObject.links && decodedPayloadObject.links[2] ? decodedPayloadObject.links[2].t : "";
+            l3Url.value   = decodedPayloadObject.links && decodedPayloadObject.links[2] ? decodedPayloadObject.links[2].u : "";
 
             // Fill import url checker bar with current link to ease verification updates
             importUrlInput.value = window.location.href;
@@ -267,7 +273,7 @@ editHubValve.addEventListener("click", () => {
             creatorStudioPane.classList.add("active-view-pane");
 
         } catch (formHydrationError) {
-            console.error("FORM HYDRATION SYSTEM EXCEPTION:", formHydrationError);
+            console.error("FORM RE-POPULATION SYSTEM EXCEPTION:", formHydrationError);
         }
     }
 });
@@ -292,6 +298,3 @@ importUrlInput.addEventListener("input", () => {
 // 🔌 LIFECYCLE LISTENERS HOOKS: Run state decoders on page entry and window changes
 window.addEventListener("hashchange", runSystemStateReconciliation);
 window.addEventListener("DOMContentLoaded", runSystemStateReconciliation);
-
-
-
