@@ -199,41 +199,43 @@ compileHubTrigger.addEventListener("click", () => {
    ========================================================================== */
 
 /* ==========================================================================
-   🛡️ RECONCILED ROUTER GATEWAY - PARSES AND TOGGLES UI VISIBILITY MODES
+   🛡️ RECONCILED ROUTER GATEWAY - PURE DECOMMISSIONED DECODER ENGINE
    ========================================================================== */
 function runSystemStateReconciliation() {
     const activeUrlHashString = window.location.hash;
 
-    // 1. Check if a profile payload exists in the URL hash string parameters
-    if (activeUrlHashString && activeUrlHashString.includes('profile=')) {
+    // Check if the address bar hash contains our active profile parameter data payload
+    if (activeUrlHashString.includes("profile=")) {
         try {
-            // Apply decodeURIComponent to handle percent-encoding tags before parsing parameters
-            const cleanHashString = decodeURIComponent(activeUrlHashString.substring(1));
-            const hashParams = new URLSearchParams(cleanHashString);
+            // Use native URLSearchParams to isolate and pull out the raw profile token cleanly
+            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
             const profileDataRaw = hashParams.get('profile');
-            
+
             if (profileDataRaw) {
-                // Decode the clean Base64 string payload array
-                const cleanJSONString = atob(profileDataRaw);
+                // 🚀 THE CRITICAL FIX: Read raw string text directly, bypassing legacy atob binary decryptions
+                const cleanJSONString = decodeURIComponent(profileDataRaw);
+                
+                // Safely parse the clean text stream directly into a JavaScript object package
                 const userProfile = JSON.parse(cleanJSONString);
                 
-                // 2. MATCHED ELEMENT IDs TOGGLE: Hide the Builder Form, Show the Profile Card
-                creatorStudioPane.style.display = 'none'; 
-                profileShowcasePane.style.display = 'block'; 
+                // Hide the builder input panels and draw your premium profile display card instantly
+                creatorStudioPane.classList.remove("active-view-pane");
+                profileShowcasePane.classList.add("active-view-pane");
                 
-                // 3. Render the compiled parameters data onto the profile layout elements
-                renderProfileCard(userProfile); 
+                // Fire our master render engine to draw the link buttons onto the showcase deck layout
+                renderProfileCard(userProfile);
             }
         } catch (error) {
-            console.error("Routing/Parsing failed at system gateway:", error);
-            // If data cargo token is corrupted, drop user safely into the creator interface form by default
-            creatorStudioPane.style.display = 'block';
-            profileShowcasePane.style.display = 'none';
+            console.error("Profile decoding failed at runtime gateway:", error);
+            // Fallback safety route: clear out corrupted tokens and load creation forms cockpit
+            window.location.hash = "";
+            profileShowcasePane.classList.remove("active-view-pane");
+            creatorStudioPane.classList.add("active-view-pane");
         }
     } else {
-        // No profile cargo found in URL, safely show the Main Creator Console form dashboard
-        creatorStudioPane.style.display = 'block';
-        profileShowcasePane.style.display = 'none';
+        // Default root link view state setup: keep showcase hidden, unroll creator studio console
+        profileShowcasePane.classList.remove("active-view-pane");
+        creatorStudioPane.classList.add("active-view-pane");
     }
 }
 
