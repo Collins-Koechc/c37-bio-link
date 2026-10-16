@@ -185,16 +185,19 @@ compileHubTrigger.addEventListener("click", () => {
         links: linksCollectionArray
     };
 
-    try {
+       try {
         const rawJsonString = JSON.stringify(unifiedPayloadObject);
-        const secureBase64HashToken = btoa(rawJsonString);
+        
+        // 🚀 THE CRITICAL HANDSHAKE CORRECTION: Safe Unicode serialization prevents btoa string blowouts
+        const secureBase64HashToken = btoa(unescape(encodeURIComponent(rawJsonString)));
+        
         const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureBase64HashToken}`;
         
         const linkOutputDock = document.getElementById("link-output-dock");
         const compiledLinkDisplayField = document.getElementById("compiled-link-display-field");
         const manualCopyValve = document.getElementById("manual-copy-valve");
 
-        // Hydrate and display the visual url link container on screen layout
+        // Hydrate and display the visual URL link container box layout on your screen
         if (linkOutputDock && compiledLinkDisplayField && manualCopyValve) {
             compiledLinkDisplayField.value = compiledMasterIdentityUrl;
             linkOutputDock.style.display = "block";
@@ -210,16 +213,17 @@ compileHubTrigger.addEventListener("click", () => {
             };
         }
 
-        // Update the browser address bar url string instantly
+        // Update the browser address bar URL string instantly
         window.location.hash = `profile=${secureBase64HashToken}`;
         
-        // 🚀 THE ULTIMATE STABILITY FIX: Explicitly call render engine straight inside the button click pipeline
+        // Explicitly call the master render engine straight inside the button click pipeline
         renderProfileCard(unifiedPayloadObject);
 
     } catch (err) {
         console.error("COMPILATION LOGISTICS PIPELINE BLOCK EXC:", err);
         alert("🚨 System Notification: Data compression failure during hash allocation loops.");
     }
+
 });
 
 // ⚙️ THE SANDBOX EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
