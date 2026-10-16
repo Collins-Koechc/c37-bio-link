@@ -89,34 +89,39 @@ fileInput.addEventListener("change", (event) => {
     }
 });
 
-// 🔄 RENDER PROCESSED SHOWCASE PROFILE CARD ENGINE
+/* ==========================================================================
+   🔄 RENDER PROCESSED SHOWCASE PROFILE CARD ENGINE (EMPTY ARRAY PROOF)
+   ========================================================================== */
 function renderProfileCard(userProfile) {
     // Hydrate preview card content typography fields character-for-character
-    viewName.textContent = userProfile.name;
+    viewName.textContent = userProfile.name || "";
     viewBio.textContent = userProfile.bio || "";
     
     // Assign compressed avatar string, falling back to gold-bordered vector SVG if clear
     viewAvatar.src = userProfile.img || DEFAULT_AVATAR;
 
-    // Clear old residual button nodes inside landing target box deck
+    // Clear old residual button nodes inside landing target box deck layout
     bioLinksTargetDeck.innerHTML = "";
 
-    // Dynamic button generator mapping rails using unified schema array properties
-    if (userProfile.links && Array.isArray(userProfile.links)) {
+    // 🎯 CRITICAL SCALE SAFETY CHECK: Execute button spawning loops ONLY if the array has active link elements
+    if (userProfile.links && Array.isArray(userProfile.links) && userProfile.links.length > 0) {
         userProfile.links.forEach((linkItem) => {
             const dynamicAnchorElement = document.createElement("a");
             dynamicAnchorElement.href = linkItem.u.startsWith("http") ? linkItem.u : `https://${linkItem.u}`;
             dynamicAnchorElement.target = "_blank"; // Force secure browser tab separation on click
             dynamicAnchorElement.className = "bio-link-button";
             dynamicAnchorElement.textContent = linkItem.t;
+            
+            // Drop the compiled gradient button directly onto the showcase deck layout
             bioLinksTargetDeck.appendChild(dynamicAnchorElement);
         });
     }
 
-    // Toggle local screen visibility view states instantly
-    creatorStudioPane.classList.remove("active-view-pane");
-    profileShowcasePane.classList.add("active-view-pane");
+    // Toggle local screen visibility view states instantly, masking form dashboards completely
+    creatorStudioPane.style.display = 'none'; 
+    profileShowcasePane.style.display = 'block'; 
 }
+
 // ⚡ RECONCILED SERVERLESS COMPILER ENGINE (MATCHED KEY CONFIGURATIONS)
 compileHubTrigger.addEventListener("click", () => {
     const targetName = nameInput.value ? nameInput.value.trim() : "";
