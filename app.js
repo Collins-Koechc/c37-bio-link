@@ -241,8 +241,9 @@ function runSystemStateReconciliation() {
     console.log("No payload found. Launching standard builder workspace.");
     creatorStudioPane.style.display = 'block';
     profileShowcasePane.style.display = 'none';
-}/* ==========================================================================
-   ⚙️ NEW COMPONENT LAYER: THE SANDBOX HUB MANAGEMENT CONTROL VALVE
+}
+/* ==========================================================================
+   ⚙️ THE SANDBOX EDIT HUB VALVE: AUTOMATED ARRAY INDEX PRE-FILL HYDRATION
    ========================================================================== */
 editHubValve.addEventListener("click", () => {
     const activeUrlHashString = window.location.hash;
@@ -265,14 +266,14 @@ editHubValve.addEventListener("click", () => {
                 activeAvatarBase64Stream = decodedPayloadObject.img || "";
 
                 if (activeAvatarBase64Stream !== "") {
-                    uploadStatusLabel.textContent = "📷 Photo Extracted From Hash URL!";
+                    uploadStatusLabel.textContent = "📷 Photo Loaded From Active Link!";
                     uploadStatusLabel.style.color = "var(--primary-gold)";
                 }
 
-                // Safely look up individual elements using ordered array coordinates
+                // 🎯 THE CRITICAL REPAIR: Safely look up individual elements using proper array index boundaries
                 const activeLinksArray = decodedPayloadObject.links || [];
 
-                // Hydrate Button 1 input text fields using index position 0 parameters
+                // Hydrate Button 1 input text fields using index position 0 parameters safely
                 if (activeLinksArray.length > 0 && activeLinksArray[0]) {
                     l1Title.value = activeLinksArray[0].t || "";
                     l1Url.value   = activeLinksArray[0].u || "";
@@ -280,7 +281,7 @@ editHubValve.addEventListener("click", () => {
                     l1Title.value = ""; l1Url.value = "";
                 }
 
-                // Hydrate Button 2 input text fields using index position 1 parameters
+                // Hydrate Button 2 input text fields using index position 1 parameters safely
                 if (activeLinksArray.length > 1 && activeLinksArray[1]) {
                     l2Title.value = activeLinksArray[1].t || "";
                     l2Url.value   = activeLinksArray[1].u || "";
@@ -288,7 +289,7 @@ editHubValve.addEventListener("click", () => {
                     l2Title.value = ""; l2Url.value = "";
                 }
 
-                // Hydrate Button 3 input text fields using index position 2 parameters
+                // Hydrate Button 3 input text fields using index position 2 parameters safely
                 if (activeLinksArray.length > 2 && activeLinksArray[2]) {
                     l3Title.value = activeLinksArray[2].t || "";
                     l3Url.value   = activeLinksArray[2].u || "";
