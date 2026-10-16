@@ -118,41 +118,13 @@ function renderProfileCard(userProfile) {
     profileShowcasePane.classList.add("active-view-pane");
 }
 /* ==========================================================================
-   ⚡ PART 3: UNBREAKABLE COMPILER ENGINE & URLSearchParams ROUTING GATEWAY
+   ⚡ PART 3: SERVERLESS COMPILER ENGINE (IMMUNE TO RECURSIVE LOOPS)
    ========================================================================== */
-
-// 🛡️ RECONCILED ROUTER GATEWAY WITH SECURE STATE DECODING LOOKUPS
-function runSystemStateReconciliation() {
-    const activeUrlHashString = window.location.hash;
-
-    if (activeUrlHashString.includes("profile=")) {
-        try {
-            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
-            const profileDataRaw = hashParams.get('profile');
-
-            if (profileDataRaw) {
-                // 🚀 THE BREAKTHROUGH UPGRADE: Pristine URI decoding restores our clean JSON text array instantly
-                const cleanJSONString = decodeURIComponent(profileDataRaw);
-                const userProfile = JSON.parse(cleanJSONString);
-                renderProfileCard(userProfile);
-            }
-        } catch (error) {
-            console.error("Profile decoding failed:", error);
-            window.location.hash = "";
-            profileShowcasePane.classList.remove("active-view-pane");
-            creatorStudioPane.classList.add("active-view-pane");
-        }
-    } else {
-        profileShowcasePane.classList.remove("active-view-pane");
-        creatorStudioPane.classList.add("active-view-pane");
-    }
-}
-
-// ⚡ SERVERLESS COMPILER ENGINE (UNCRACKED ENCODE VARIANT)
 compileHubTrigger.addEventListener("click", () => {
     const targetName = nameInput.value.trim();
     const targetBio = bioInput.value.trim();
 
+    // Structural validation check
     if (targetName === "") {
         alert("🛡️ Please input a Public Profile Name to compile your hub.");
         return;
@@ -179,7 +151,7 @@ compileHubTrigger.addEventListener("click", () => {
     try {
         const rawJsonString = JSON.stringify(unifiedPayloadObject);
         
-        // 🚀 BYPASSES BTOA AND PERCENT-ENCODING LIMITATIONS FOREVER!
+        // 🚀 THE BREAKTHROUGH UPGRADE: Pure encodeURIComponent bypasses btoa limitations forever!
         const secureEncodedToken = encodeURIComponent(rawJsonString);
         const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureEncodedToken}`;
         
@@ -202,10 +174,16 @@ compileHubTrigger.addEventListener("click", () => {
             };
         }
 
+        // Temporarily disconnect router gate to block hash change reload loop cycles
         window.removeEventListener("hashchange", runSystemStateReconciliation);
+        
+        // Push the token directly into the browser URL bar character stream
         window.location.hash = `profile=${secureEncodedToken}`;
+        
+        // Instantly switch screen pane visibility views and render profile card
         renderProfileCard(unifiedPayloadObject);
         
+        // Safely re-hook active background listeners right after deployment locks
         setTimeout(() => {
             window.addEventListener("hashchange", runSystemStateReconciliation);
         }, 100);
@@ -214,8 +192,44 @@ compileHubTrigger.addEventListener("click", () => {
         console.error("COMPILATION HANDSHAKE EXCEPTION:", err);
     }
 });
+/* ==========================================================================
+   🔄 PART 3: THE URLSearchParams DECODER ENGINE & WINDOW LIFECYCLE LISTENERS
+   ========================================================================== */
 
-// ⚙️ THE Sandbox EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
+// 🛡️ RECONCILED ROUTER GATEWAY WITH SECURE STATE DECODING LOOKUPS
+function runSystemStateReconciliation() {
+    const activeUrlHashString = window.location.hash;
+
+    // Check if the address bar hash starts with our active profile parameter data
+    if (activeUrlHashString.includes("profile=")) {
+        try {
+            // Use native URLSearchParams to isolate and pull out the raw profile token cleanly
+            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
+            const profileDataRaw = hashParams.get('profile');
+
+            if (profileDataRaw) {
+                // Pristine URI decoding restores our clean JSON text array instantly
+                const cleanJSONString = decodeURIComponent(profileDataRaw);
+                const userProfile = JSON.parse(cleanJSONString);
+                
+                // Fire our master render engine to draw the card view instantly
+                renderProfileCard(userProfile);
+            }
+        } catch (error) {
+            console.error("Profile decoding failed at runtime gateway:", error);
+            // Fallback safety route: clear out corrupted tokens and load creation forms cockpit
+            window.location.hash = "";
+            profileShowcasePane.classList.remove("active-view-pane");
+            creatorStudioPane.classList.add("active-view-pane");
+        }
+    } else {
+        // Default root link view state setup: keep showcase hidden, unroll creator studio console
+        profileShowcasePane.classList.remove("active-view-pane");
+        creatorStudioPane.classList.add("active-view-pane");
+    }
+}
+
+// ⚙️ THE SANDBOX EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
 editHubValve.addEventListener("click", () => {
     const activeUrlHashString = window.location.hash;
     if (activeUrlHashString.includes("profile=")) {
@@ -227,6 +241,7 @@ editHubValve.addEventListener("click", () => {
                 const cleanJSONString = decodeURIComponent(profileDataRaw);
                 const decodedPayloadObject = JSON.parse(cleanJSONString);
 
+                // Populate identity form boxes with existing text parameters automatically
                 nameInput.value = decodedPayloadObject.name || "";
                 bioInput.value = decodedPayloadObject.bio || "";
                 activeAvatarBase64Stream = decodedPayloadObject.img || "";
@@ -236,6 +251,7 @@ editHubValve.addEventListener("click", () => {
                     uploadStatusLabel.style.color = "var(--primary-gold)";
                 }
 
+                // Restore links input forms data, checking array boundaries carefully
                 const activeLinksArray = decodedPayloadObject.links || [];
                 l1Title.value = activeLinksArray[0] ? activeLinksArray[0].t : "";
                 l1Url.value   = activeLinksArray[0] ? activeLinksArray[0].u : "";
@@ -246,6 +262,7 @@ editHubValve.addEventListener("click", () => {
 
                 importUrlInput.value = window.location.href;
 
+                // Instantly transition screen visibility pane state to display creation form cockpit
                 profileShowcasePane.classList.remove("active-view-pane");
                 creatorStudioPane.classList.add("active-view-pane");
             }
@@ -265,6 +282,6 @@ importUrlInput.addEventListener("input", () => {
     }
 });
 
-// LIFECYCLE LISTENERS HOOKED AT RUNTIME ENTRY
+// 🔌 LIFECYCLE LISTENERS HOOKS: Turn on your background decoding listeners on page entry
 window.addEventListener("hashchange", runSystemStateReconciliation);
 window.addEventListener("DOMContentLoaded", runSystemStateReconciliation);
