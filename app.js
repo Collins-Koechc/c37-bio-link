@@ -199,43 +199,42 @@ compileHubTrigger.addEventListener("click", () => {
    ========================================================================== */
 
 /* ==========================================================================
-   🛡️ RECONCILED ROUTER GATEWAY - PURE DECOMMISSIONED DECODER ENGINE
+   🛡️ RECONCILED ROUTER GATEWAY - DIRECT VIEW STATE VISIBILITY CONTROLLER
    ========================================================================== */
 function runSystemStateReconciliation() {
     const activeUrlHashString = window.location.hash;
 
-    // Check if the address bar hash contains our active profile parameter data payload
+    // Check if a profile payload exists anywhere inside the URL hash string parameters
     if (activeUrlHashString.includes("profile=")) {
         try {
-            // Use native URLSearchParams to isolate and pull out the raw profile token cleanly
-            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
+            // Apply decodeURIComponent to handle percent-encoding tags safely before parsing
+            const cleanHashString = decodeURIComponent(activeUrlHashString.substring(1));
+            const hashParams = new URLSearchParams(cleanHashString);
             const profileDataRaw = hashParams.get('profile');
 
             if (profileDataRaw) {
-                // 🚀 THE CRITICAL FIX: Read raw string text directly, bypassing legacy atob binary decryptions
-                const cleanJSONString = decodeURIComponent(profileDataRaw);
-                
-                // Safely parse the clean text stream directly into a JavaScript object package
+                // Decode the clean Base64 string payload array character-for-character
+                const cleanJSONString = atob(profileDataRaw);
                 const userProfile = JSON.parse(cleanJSONString);
                 
-                // Hide the builder input panels and draw your premium profile display card instantly
-                creatorStudioPane.classList.remove("active-view-pane");
-                profileShowcasePane.classList.add("active-view-pane");
+                // 🎯 THE STABILITY TOGGLE: Explicitly hide the Builder Form and reveal the Showcase Card
+                creatorStudioPane.style.display = 'none'; 
+                profileShowcasePane.style.display = 'block'; 
                 
-                // Fire our master render engine to draw the link buttons onto the showcase deck layout
+                // Fire our master render engine to draw the link buttons onto the display deck
                 renderProfileCard(userProfile);
             }
         } catch (error) {
-            console.error("Profile decoding failed at runtime gateway:", error);
-            // Fallback safety route: clear out corrupted tokens and load creation forms cockpit
+            console.error("Profile parsing gateway caught critical failure:", error);
+            // Fallback safety route: clear out corrupted tokens and open creation cockpit
             window.location.hash = "";
-            profileShowcasePane.classList.remove("active-view-pane");
-            creatorStudioPane.classList.add("active-view-pane");
+            creatorStudioPane.style.display = 'block';
+            profileShowcasePane.style.display = 'none';
         }
     } else {
-        // Default root link view state setup: keep showcase hidden, unroll creator studio console
-        profileShowcasePane.classList.remove("active-view-pane");
-        creatorStudioPane.classList.add("active-view-pane");
+        // Default root link setup: ensure creator studio console form is fully unrolled
+        creatorStudioPane.style.display = 'block';
+        profileShowcasePane.style.display = 'none';
     }
 }
 
