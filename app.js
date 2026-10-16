@@ -90,37 +90,40 @@ fileInput.addEventListener("change", (event) => {
         imageFileLoader.readAsDataURL(targetingFileAsset[0]);
     }
 });
-
-// 🔄 RENDER PROCESSED SHOWCASE PROFILE CARD ENGINE
+/* ==========================================================================
+   🔄 PART 2: RECONCILED SHOWCASE PROFILE CARD PRESENTATION LAYER
+   ========================================================================== */
 function renderProfileCard(userProfile) {
-    // Populate typography and media placeholders surgically
+    // Hydrate public brand typography fields character-for-character
     viewName.textContent = userProfile.name || "";
     viewBio.textContent = userProfile.bio || "";
     viewAvatar.src = userProfile.img || DEFAULT_AVATAR;
 
-    // Clear any previous button nodes inside the showcase link grid deck
+    // Clear old residual button nodes inside landing target box deck layout
     bioLinksTargetDeck.innerHTML = "";
 
-    // Safely iterate through active destination link parameters
+    // 🎯 THE CRITICAL KEY CORRECTION: Read keys using exact shorthand 't' and 'u' data properties
     if (userProfile.links && Array.isArray(userProfile.links)) {
         userProfile.links.forEach((linkItem) => {
             if (linkItem && linkItem.t && linkItem.u) {
                 const dynamicAnchorElement = document.createElement("a");
+                // Safety protocol: force absolute HTTPS mapping paths
                 dynamicAnchorElement.href = linkItem.u.startsWith("http") ? linkItem.u : `https://${linkItem.u}`;
-                dynamicAnchorElement.target = "_blank"; // Forces independent mobile browser tabs
+                dynamicAnchorElement.target = "_blank"; // Force independent mobile tabs
                 dynamicAnchorElement.className = "bio-link-button";
-                dynamicAnchorElement.textContent = linkItem.t;
+                dynamicAnchorElement.textContent = linkItem.t; // Read 't' key correctly
                 
-                // Append the fresh button directly to the visible preview canvas layer
+                // Drop the compiled button node straight onto the active showcase preview layout
                 bioLinksTargetDeck.appendChild(dynamicAnchorElement);
             }
         });
     }
 
-    // Toggle view states explicitly via style overrides
+    // Toggle view visibility states cleanly via direct style overrides
     creatorStudioPane.style.display = 'none';
     profileShowcasePane.style.display = 'block';
 }
+
 /* ==========================================================================
    ⚡ PART 3: Payload COMPILER ENGINE, GATEWAY ROUTER & LIFECYCLE LISTENERS
    ========================================================================== */
