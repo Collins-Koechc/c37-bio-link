@@ -127,37 +127,46 @@ function renderProfileCard(userProfile) {
 /* ==========================================================================
    ⚡ PART 3: Payload COMPILER ENGINE, GATEWAY ROUTER & LIFECYCLE LISTENERS
    ========================================================================== */
-
-// 🛡️ RECONCILED ROUTER GATEWAY - PARSES URL INBOUND LOGS SAFELY PERMANENTLY
+/* ==========================================================================
+   🛡️ RECONCILED ROUTER GATEWAY - PARSES URL PARAMETERS WITH LIFECYCLE CONTROLS
+   ========================================================================== */
 function runSystemStateReconciliation() {
+    // Read the active window hash parameters directly from the browser window layout
     const activeUrlHashString = window.location.hash;
+    console.log("Current Window Hash at Boot Tracker:", activeUrlHashString);
 
-    // Check if the address bar hash contains your active profile parameter data payload cleanly
+    // 1. Check if a profile payload exists anywhere inside the URL hash string parameters safely
     if (activeUrlHashString && activeUrlHashString.includes("profile=")) {
         try {
-            // Apply strict substring slicing and URLSearchParams to parse parameters cleanly
-            const urlQueryString = activeUrlHashString.substring(1);
-            const hashParams = new URLSearchParams(urlQueryString);
+            // Apply decodeURIComponent to clear native browser percent-encoding before parsing
+            const cleanHashString = decodeURIComponent(activeUrlHashString.substring(1));
+            const hashParams = new URLSearchParams(cleanHashString);
             const profileDataRaw = hashParams.get('profile');
 
             if (profileDataRaw) {
-                // Clear percent symbols and unpack text object matrices safely
-                const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
+                // Decode the clean Base64 string payload array character-for-character
+                const cleanJSONString = atob(profileDataRaw);
                 const userProfile = JSON.parse(cleanJSONString);
                 
-                // Fire your master render engine to draw the card view instantly
+                // 2. FORCE VISIBILITY OVERRIDES: Hide the creation form and show the profile showcase card
+                creatorStudioPane.style.display = 'none'; 
+                profileShowcasePane.style.display = 'block'; 
+                
+                // 3. CALL NATIVE RENDERER: Pass data package straight to display components
                 renderProfileCard(userProfile);
-                return; // Exit smoothly so no fallback scripts run
+                return; // Exit smoothly so no fallback scripts overwrite your hash parameters!
             }
         } catch (error) {
-            console.error("Profile parsing gateway caught critical failure:", error);
+            console.error("Critical rendering pipeline crash caught:", error);
         }
     }
     
-    // Default fallback setup: keep showcase hidden, unroll creator studio console form
+    // Default fallback setup: if no valid parameter string is discovered, keep creator studio console form unrolled
+    console.log("No payload discovered. Launching standard creator workspace cockpit.");
     creatorStudioPane.style.display = 'block';
     profileShowcasePane.style.display = 'none';
 }
+
 
 // ⚡ IMMUTABLE COMPILER TRIGGER VALVE - IMMUNE TO BROWSER ENCODING BOTTLENECKS
 compileHubTrigger.addEventListener("click", () => {
