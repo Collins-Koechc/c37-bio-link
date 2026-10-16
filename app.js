@@ -202,100 +202,47 @@ compileHubTrigger.addEventListener("click", () => {
 /* ==========================================================================
    🔄 PART 3: THE URLSearchParams DECODER ENGINE & WINDOW LIFECYCLE LISTENERS
    ========================================================================== */
-
 /* ==========================================================================
-   🛡️ RECONCILED ROUTER GATEWAY - DIRECT VIEW STATE VISIBILITY CONTROLLER
+   🛡️ RECONCILED ROUTER GATEWAY & LIFECYCLE CONTROLLER (ZERO HASH RESETS)
    ========================================================================== */
+
+// Unified rendering and mapping router gate
 function runSystemStateReconciliation() {
+    console.log("Current Window Hash at Boot Tracker:", window.location.hash);
     const activeUrlHashString = window.location.hash;
 
-    // Check if a profile payload exists anywhere inside the URL hash string parameters
-    if (activeUrlHashString.includes("profile=")) {
+    // 1. Check if a profile payload exists anywhere inside the URL hash parameters safely
+    if (activeUrlHashString && activeUrlHashString.includes('profile=')) {
         try {
-            // Apply decodeURIComponent to handle percent-encoding tags safely before parsing
-            const cleanHashString = decodeURIComponent(activeUrlHashString.substring(1));
-            const hashParams = new URLSearchParams(cleanHashString);
+            // Slicing to bypass browser decoding loops
+            const urlQueryString = activeUrlHashString.slice(1);
+            const hashParams = new URLSearchParams(urlQueryString);
             const profileDataRaw = hashParams.get('profile');
-
+            
             if (profileDataRaw) {
-                // Decode the clean Base64 string payload array character-for-character
-                const cleanJSONString = atob(profileDataRaw);
+                // Decode the clean token payload array directly, avoiding double-resets
+                const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
                 const userProfile = JSON.parse(cleanJSONString);
                 
-                // 🎯 THE STABILITY TOGGLE: Explicitly hide the Builder Form and reveal the Showcase Card
-                creatorStudioPane.style.display = 'none'; 
-                profileShowcasePane.style.display = 'block'; 
+                // 2. TOGGLE UI VISIBILITY: Hide the Builder Form, Show the Profile Card via style overrides
+                creatorStudioPane.style.display = 'none';
+                profileShowcasePane.style.display = 'block';
                 
-                // Fire our master render engine to draw the link buttons onto the display deck
+                // 3. Populate your visual components and draw link buttons onto the display deck
                 renderProfileCard(userProfile);
+                return; // Exit smoothly so no fallback resetting logic executes
             }
         } catch (error) {
-            console.error("Profile parsing gateway caught critical failure:", error);
-            // Fallback safety route: clear out corrupted tokens and open creation cockpit
-            window.location.hash = "";
-            creatorStudioPane.style.display = 'block';
-            profileShowcasePane.style.display = 'none';
+            console.error("Critical profile rendering pipeline crash:", error);
         }
-    } else {
-        // Default root link setup: ensure creator studio console form is fully unrolled
-        creatorStudioPane.style.display = 'block';
-        profileShowcasePane.style.display = 'none';
     }
+    
+    // Default fallback setup: if no valid parameter string is discovered, load creator console dashboard form
+    console.log("No payload found. Launching standard builder workspace.");
+    creatorStudioPane.style.display = 'block';
+    profileShowcasePane.style.display = 'none';
 }
 
-// ⚙️ THE SANDBOX EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
-editHubValve.addEventListener("click", () => {
-    const activeUrlHashString = window.location.hash;
-    if (activeUrlHashString.includes("profile=")) {
-        try {
-            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
-            const profileDataRaw = hashParams.get('profile');
-
-            if (profileDataRaw) {
-                const cleanJSONString = decodeURIComponent(profileDataRaw);
-                const decodedPayloadObject = JSON.parse(cleanJSONString);
-
-                // Populate identity form boxes with existing text parameters automatically
-                nameInput.value = decodedPayloadObject.name || "";
-                bioInput.value = decodedPayloadObject.bio || "";
-                activeAvatarBase64Stream = decodedPayloadObject.img || "";
-
-                if (activeAvatarBase64Stream !== "") {
-                    uploadStatusLabel.textContent = "📷 Photo Extracted From Hash URL!";
-                    uploadStatusLabel.style.color = "var(--primary-gold)";
-                }
-
-                // Restore links input forms data, checking array boundaries carefully
-                const activeLinksArray = decodedPayloadObject.links || [];
-                l1Title.value = activeLinksArray[0] ? activeLinksArray[0].t : "";
-                l1Url.value   = activeLinksArray[0] ? activeLinksArray[0].u : "";
-                l2Title.value = activeLinksArray[1] ? activeLinksArray[1].t : "";
-                l2Url.value   = activeLinksArray[1] ? activeLinksArray[1].u : "";
-                l3Title.value = activeLinksArray[2] ? activeLinksArray[2].t : "";
-                l3Url.value   = activeLinksArray[2] ? activeLinksArray[2].u : "";
-
-                importUrlInput.value = window.location.href;
-
-                // Instantly transition screen visibility pane state to display creation form cockpit
-                profileShowcasePane.classList.remove("active-view-pane");
-                creatorStudioPane.classList.add("active-view-pane");
-            }
-        } catch (e) {
-            console.error("FORM RE-POPULATION EXCEPTION:", e);
-        }
-    }
-});
-
-// Import field link stream monitor
-importUrlInput.addEventListener("input", () => {
-    const pasteUrlValueStream = importUrlInput.value.trim();
-    if (pasteUrlValueStream.includes("profile=")) {
-        const extractedHashCargoString = pasteUrlValueStream.substring(pasteUrlValueStream.indexOf("profile="));
-        window.location.hash = extractedHashCargoString;
-        setTimeout(() => { editHubValve.click(); importUrlInput.value = pasteUrlValueStream; }, 100);
-    }
-});
-
-// 🔌 LIFECYCLE LISTENERS HOOKS: Turn on your background decoding listeners on page entry
+// 🔌 LIFECYCLE LISTENERS HOOKS: Connected cleanly to stable window event channels
 window.addEventListener("hashchange", runSystemStateReconciliation);
-window.addEventListener("DOMContentLoaded", runSystemStateReconciliation);
+window.addEventListener("load", runSystemStateReconciliation);
