@@ -241,7 +241,84 @@ function runSystemStateReconciliation() {
     console.log("No payload found. Launching standard builder workspace.");
     creatorStudioPane.style.display = 'block';
     profileShowcasePane.style.display = 'none';
-}
+}/* ==========================================================================
+   ⚙️ NEW COMPONENT LAYER: THE SANDBOX HUB MANAGEMENT CONTROL VALVE
+   ========================================================================== */
+editHubValve.addEventListener("click", () => {
+    const activeUrlHashString = window.location.hash;
+
+    // Check if the address bar hash contains your active profile parameter data payload cleanly
+    if (activeUrlHashString.includes("profile=")) {
+        try {
+            // Apply URLSearchParams to isolate and pull out the raw profile token cleanly
+            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
+            const profileDataRaw = hashParams.get('profile');
+
+            if (profileDataRaw) {
+                // Clear percent symbols and unpack text object matrices
+                const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
+                const decodedPayloadObject = JSON.parse(cleanJSONString);
+
+                // Populate identity form boxes with existing text parameters automatically
+                nameInput.value = decodedPayloadObject.name || "";
+                bioInput.value = decodedPayloadObject.bio || "";
+                activeAvatarBase64Stream = decodedPayloadObject.img || "";
+
+                if (activeAvatarBase64Stream !== "") {
+                    uploadStatusLabel.textContent = "📷 Photo Extracted From Hash URL!";
+                    uploadStatusLabel.style.color = "var(--primary-gold)";
+                }
+
+                // Safely look up individual elements using ordered array coordinates
+                const activeLinksArray = decodedPayloadObject.links || [];
+
+                // Hydrate Button 1 input text fields using index position 0 parameters
+                if (activeLinksArray.length > 0 && activeLinksArray[0]) {
+                    l1Title.value = activeLinksArray[0].t || "";
+                    l1Url.value   = activeLinksArray[0].u || "";
+                } else {
+                    l1Title.value = ""; l1Url.value = "";
+                }
+
+                // Hydrate Button 2 input text fields using index position 1 parameters
+                if (activeLinksArray.length > 1 && activeLinksArray[1]) {
+                    l2Title.value = activeLinksArray[1].t || "";
+                    l2Url.value   = activeLinksArray[1].u || "";
+                } else {
+                    l2Title.value = ""; l2Url.value = "";
+                }
+
+                // Hydrate Button 3 input text fields using index position 2 parameters
+                if (activeLinksArray.length > 2 && activeLinksArray[2]) {
+                    l3Title.value = activeLinksArray[2].t || "";
+                    l3Url.value   = activeLinksArray[2].u || "";
+                } else {
+                    l3Title.value = ""; l3Url.value = "";
+                }
+
+                // Fill your import url bar with current link to ease verification updates
+                importUrlInput.value = window.location.href;
+
+                // THE VISIBILITY SWITCH: Hide the profile card display and unroll your builder forms
+                profileShowcasePane.style.display = 'none';
+                creatorStudioPane.style.display = 'block';
+            }
+        } catch (formHydrationError) {
+            console.error("FORM RE-POPULATION EXCEPTION CAUGHT:", formHydrationError);
+        }
+    }
+});
+
+// Import field link stream monitor
+importUrlInput.addEventListener("input", () => {
+    const pasteUrlValueStream = importUrlInput.value.trim();
+    if (pasteUrlValueStream.includes("profile=")) {
+        const extractedHashCargoString = pasteUrlValueStream.substring(pasteUrlValueStream.indexOf("profile="));
+        window.location.hash = extractedHashCargoString;
+        setTimeout(() => { editHubValve.click(); importUrlInput.value = pasteUrlValueStream; }, 100);
+    }
+});
+
 
 // 🔌 LIFECYCLE LISTENERS HOOKS: Connected cleanly to stable window event channels
 window.addEventListener("hashchange", runSystemStateReconciliation);
