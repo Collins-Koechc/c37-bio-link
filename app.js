@@ -117,42 +117,76 @@ function renderProfileCard(userProfile) {
     profileShowcasePane.classList.add("active-view-pane");
 }
 /* ==========================================================================
-   ⚡ SERVERLESS ENCRYPTION COMPILER ENGINE (KILLS RECURSIVE RE-LOAD LOOPS)
+   ⚡ RECONCILED SERVERLESS COMPILER ENGINE & ROUTING GATEWAY
    ========================================================================== */
-compileHubTrigger.addEventListener("click", () => {
-    const targetName = nameInput.value.trim();
-    const targetBio = bioInput.value.trim();
 
-    // Verify structural constraint: prevent compile if name field is empty
+// 🛡️ RECONCILED ROUTER GATEWAY - PARSES URL INCOMING PARAMETERS ON LOAD
+function runSystemStateReconciliation() {
+    const activeUrlHashString = window.location.hash;
+
+    // Check if the address bar hash starts with our active profile parameter data
+    if (activeUrlHashString.includes("profile=")) {
+        try {
+            // Use native URLSearchParams to isolate and pull out the raw profile token cleanly
+            const hashParams = new URLSearchParams(activeUrlHashString.substring(1));
+            const profileDataRaw = hashParams.get('profile');
+
+            if (profileDataRaw) {
+                // Clean up browser percent-encoding and decode Base64 stream back into JSON text
+                const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
+                const userProfile = JSON.parse(cleanJSONString);
+                
+                // Fire our master render engine to draw the card view instantly
+                renderProfileCard(userProfile);
+            }
+        } catch (error) {
+            console.error("Profile decryption failed at runtime gateway:", error);
+            // Fallback safety route: clear out corrupted tokens and load creation forms cockpit
+            window.location.hash = "";
+            profileShowcasePane.classList.remove("active-view-pane");
+            creatorStudioPane.classList.add("active-view-pane");
+        }
+    } else {
+        // Default root link view state setup: keep showcase hidden, unroll creator studio console
+        profileShowcasePane.classList.remove("active-view-pane");
+        creatorStudioPane.classList.add("active-view-pane");
+    }
+}
+
+// ⚡ IMMUCATE COMPILER TRIGGER VALVE - DIRECT RUNTIME VIEW STATE RECONCILIATION
+compileHubTrigger.addEventListener("click", () => {
+    const targetName = nameInput.value ? nameInput.value.trim() : "";
+    const targetBio = bioInput.value ? bioInput.value.trim() : "";
+
+    // Structural constraint verification check
     if (targetName === "") {
-        alert("🛡️ Please input a Public Profile Name to compile your hub.");
+        alert("🛡️ Security Notice: Please input a Public Profile Name to compile your hub.");
         return;
     }
 
     const linksCollectionArray = [];
     
-    // Filter rows 1, 2, and 3, pruning away empty input fields safely
-    if (l1Title.value.trim() !== "" && l1Url.value.trim() !== "") {
+    // Scrape form data values cleanly, ignoring empty input rows safely
+    if (l1Title && l1Title.value.trim() !== "" && l1Url && l1Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l1Title.value.trim(), u: l1Url.value.trim() });
     }
-    if (l2Title.value.trim() !== "" && l2Url.value.trim() !== "") {
+    if (l2Title && l2Title.value.trim() !== "" && l2Url && l2Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l2Title.value.trim(), u: l2Url.value.trim() });
     }
-    if (l3Title.value.trim() !== "" && l3Url.value.trim() !== "") {
+    if (l3Title && l3Title.value.trim() !== "" && l3Url && l3Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l3Title.value.trim(), u: l3Url.value.trim() });
     }
 
-    // UNIFIED DATA SCHEMA: Maps character-for-character with reader logic parameters
+    // Unified Object State Payload Shell Array
     const unifiedPayloadObject = {
         name: targetName,
         bio: targetBio,
-        img: activeAvatarBase64Stream,
+        img: activeAvatarBase64Stream || "",
         links: linksCollectionArray
     };
 
     try {
         const rawJsonString = JSON.stringify(unifiedPayloadObject);
-        // Base64 serialization
         const secureBase64HashToken = btoa(rawJsonString);
         const compiledMasterIdentityUrl = `${window.location.origin}${window.location.pathname}#profile=${secureBase64HashToken}`;
         
@@ -160,7 +194,7 @@ compileHubTrigger.addEventListener("click", () => {
         const compiledLinkDisplayField = document.getElementById("compiled-link-display-field");
         const manualCopyValve = document.getElementById("manual-copy-valve");
 
-        // Hydrate and reveal output box layout if elements are present on page
+        // Hydrate and display the visual url link container on screen layout
         if (linkOutputDock && compiledLinkDisplayField && manualCopyValve) {
             compiledLinkDisplayField.value = compiledMasterIdentityUrl;
             linkOutputDock.style.display = "block";
@@ -176,57 +210,17 @@ compileHubTrigger.addEventListener("click", () => {
             };
         }
 
-        // 🌟 THE SAFETY DISCONNECT LAYER: Prevents infinite loop triggers during compile state shifts
-        window.removeEventListener("hashchange", runSystemStateReconciliation);
-        
-        // Inject hash payload cleanly behind address bar
+        // Update the browser address bar url string instantly
         window.location.hash = `profile=${secureBase64HashToken}`;
         
-        // Instantly switch view states and render showcase profile card natively in memory
+        // 🚀 THE ULTIMATE STABILITY FIX: Explicitly call render engine straight inside the button click pipeline
         renderProfileCard(unifiedPayloadObject);
-        
-        // Re-attach routing decoder listener after safe sub-second layout stabilization window
-        setTimeout(() => {
-            window.addEventListener("hashchange", runSystemStateReconciliation);
-        }, 100);
 
     } catch (err) {
-        console.error("COMPILATION HANDSHAKE EXCEPTION:", err);
+        console.error("COMPILATION LOGISTICS PIPELINE BLOCK EXC:", err);
+        alert("🚨 System Notification: Data compression failure during hash allocation loops.");
     }
 });
-/* ==========================================================================
-   🔄 THE URLSearchParams STATE DECODER & FORM REPOPULATION VALVE
-   ========================================================================== */
-
-// 🛡️ RECONCILED ROUTER GATEWAY WITH SECURE URL SEARCH PARAMETERS LOOKUPS
-function runSystemStateReconciliation() {
-    // 1. Locate window.location.hash and strip the leading '#' marker
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const profileDataRaw = hashParams.get('profile');
-
-    if (profileDataRaw) {
-        try {
-            // 2. Clean up browser percent-encoding (%7B, %22, %3D) and decode Base64
-            const cleanJSONString = decodeURIComponent(atob(profileDataRaw));
-            
-            // 3. Safely parse the clean object string array
-            const userProfile = JSON.parse(cleanJSONString);
-            
-            // 4. Render the profile view using our unified function anchor
-            renderProfileCard(userProfile);
-            
-        } catch (error) {
-            console.error("Profile decryption failed:", error);
-            // Graceful error callback: clear corrupted state and stay inside creation forms cockpit
-            window.location.hash = "";
-            profileShowcasePane.classList.remove("active-view-pane");
-            creatorStudioPane.classList.add("active-view-pane");
-        }
-    } else {
-        profileShowcasePane.classList.remove("active-view-pane");
-        creatorStudioPane.classList.add("active-view-pane");
-    }
-}
 
 // ⚙️ THE SANDBOX EDIT CONTROL VALVE: Pre-fills forms instantly for quick updating logs
 editHubValve.addEventListener("click", () => {
