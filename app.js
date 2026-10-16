@@ -99,29 +99,29 @@ fileInput.addEventListener("change", (event) => {
 });
 
 /* ==========================================================================
-   ⚡ SERVERLESS DATA SERIALIZATION AND ENCRYPTION COMPILER VALVE
+   ⚡ RECONCILED SERVERLESS DATA ENCRYPTION COMPILER ENGINE
    ========================================================================== */
 compileHubTrigger.addEventListener("click", () => {
     // Scrape values cleanly out of the active input forms
-    const targetName = nameInput.value.trim();
-    const targetBio = bioInput.value.trim();
+    const targetName = nameInput.value ? nameInput.value.trim() : "";
+    const targetBio = bioInput.value ? bioInput.value.trim() : "";
 
-    // Verify structural constraint: prevent compile if name field is empty
+    // Verify mandatory constraint: block compile if profile name is missing
     if (targetName === "") {
-        alert("🛡️ C37 Security Notice: Please input a Public Profile Name to compile your hub.");
+        alert("🛡️ Security Notice: Please input a Public Profile Name to compile your hub.");
         return;
     }
 
     const linksCollectionArray = [];
     
     // Filter rows 1, 2, and 3, pruning away empty input fields safely
-    if (l1Title.value.trim() !== "" && l1Url.value.trim() !== "") {
+    if (l1Title && l1Title.value.trim() !== "" && l1Url && l1Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l1Title.value.trim(), u: l1Url.value.trim() });
     }
-    if (l2Title.value.trim() !== "" && l2Url.value.trim() !== "") {
+    if (l2Title && l2Title.value.trim() !== "" && l2Url && l2Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l2Title.value.trim(), u: l2Url.value.trim() });
     }
-    if (l3Title.value.trim() !== "" && l3Url.value.trim() !== "") {
+    if (l3Title && l3Title.value.trim() !== "" && l3Url && l3Url.value.trim() !== "") {
         linksCollectionArray.push({ t: l3Title.value.trim(), u: l3Url.value.trim() });
     }
 
@@ -129,14 +129,14 @@ compileHubTrigger.addEventListener("click", () => {
     const unifiedPayloadObject = {
         name: targetName,
         bio: targetBio,
-        img: activeAvatarBase64Stream,
+        img: activeAvatarBase64Stream || "",
         links: linksCollectionArray
     };
 
     try {
         const rawJsonString = JSON.stringify(unifiedPayloadObject);
         
-        // Web-safe URI component mapping to protect symbols and special characters from corruption
+        // Web-safe component normalization encoding string wrapper
         const secureBase64HashToken = btoa(encodeURIComponent(rawJsonString));
         
         // Construct your permanent standalone URL hash link address string
@@ -147,32 +147,28 @@ compileHubTrigger.addEventListener("click", () => {
         const compiledLinkDisplayField = document.getElementById("compiled-link-display-field");
         const manualCopyValve = document.getElementById("manual-copy-valve");
 
-        // Inject compiled string directly into read-only terminal display box
-        compiledLinkDisplayField.value = compiledMasterIdentityUrl;
-        
-        // Turn on visibility block and smoothly glide viewport down to reveal output dock
-        linkOutputDock.style.display = "block";
-        linkOutputDock.scrollIntoView({ behavior: "smooth" });
+        // Safety verification: Hydrate and reveal output box layout ONLY if elements are present on page
+        if (linkOutputDock && compiledLinkDisplayField && manualCopyValve) {
+            compiledLinkDisplayField.value = compiledMasterIdentityUrl;
+            linkOutputDock.style.display = "block";
+            
+            // Wire up manual copy button action valve hooks cleanly
+            manualCopyValve.onclick = function() {
+                navigator.clipboard.writeText(compiledMasterIdentityUrl).then(() => {
+                    manualCopyValve.textContent = "✅ COPIED TO CLIPBOARD!";
+                    setTimeout(() => { manualCopyValve.textContent = "📋 Copy Link To Clipboard"; }, 2500);
+                }).catch(() => {
+                    compiledLinkDisplayField.select();
+                });
+            };
+        }
 
-        // Bind interactive copy button event actions cleanly
-        manualCopyValve.onclick = function() {
-            navigator.clipboard.writeText(compiledMasterIdentityUrl).then(() => {
-                // Instantly notify user of successful asset tracking delivery via text flash
-                manualCopyValve.textContent = "✅ COPIED TO CLIPBOARD!";
-                setTimeout(() => { manualCopyValve.textContent = "📋 Copy Link To Clipboard"; }, 2500);
-            }).catch(() => {
-                // Fallback loop: auto-select text layout parameters if clipboard permission is blocked local
-                compiledLinkDisplayField.select();
-                alert("Please copy the highlighted web address link manually right now inside the box container!");
-            });
-        };
-
-        // Update branch hash parameters instantly to trigger reactive rendering changes live
+        // Force browser update parameter changes to activate state pane viewer loops cleanly
         window.location.hash = `profile=${secureBase64HashToken}`;
 
-    } catch (err) {
-        console.error("COMPILATION HANDSHAKE CRITICAL ERROR:", err);
-        alert("🚨 System Layout Error: Data stream corruption detected during serialization processing loops.");
+    } catch (compilationExceptionMatrix) {
+        console.error("COMPILATION HANDSHAKE EXCEPTION:", compilationExceptionMatrix);
+        alert("🚨 System Layout Error: Data stream serialization exception captured during compilation.");
     }
 });
 
